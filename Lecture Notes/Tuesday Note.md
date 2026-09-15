@@ -32,3 +32,19 @@ To avoid deserialisation, developers can do the following:
 - Remove unnecessary classes from class path
 - Avoid readObject, readResolve or similar
 - Validate serialised data
+
+## Week 6: Buffer Overflow
+
+C is considered to be the root of all modern programming languages, translating from mnemonics to english language, and the creation of functions and having them run independently. C can be seen as the bane of the security community, primarily due to programmers not implementing logic under the assumption that it will be handled by C. Examples of risks within C include writing beyond the boundaries of an array, failing to catch integer overflows and truncations, and calling functions with the incorrect number of arguments.
+
+When data is written outside the boundaries of memory, an overflow occurs.
+
+### Key Vulnerable Functions in C/C++
+
+- strcat()
+- strcpy()
+- sprint()
+- vsprintf()
+- bcopy()
+- gets()
+- scanf()
