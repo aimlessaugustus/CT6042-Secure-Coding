@@ -6,6 +6,8 @@ The key idea of "shifting left" during development is to integrate security prac
 
 ![alt text](<Types of Automated Security Testing.png> "Types of Automated Security Testing (Taken From Notes)")
 
+The key action/core lesson from this is to move security testing and automate it way earlier into the development life cycle. Within the assignment, consider ways that this could be represented with each.
+
 ## Week 11: Security Requirements and Threat Modelling
 
 One of the major threat modelling techniques is STRIDE, which is focused on the following:
@@ -23,3 +25,5 @@ Generally, the horizon is the limit when considering tools and testing.
 Ahsan will be happy if we look at inspired examples from GitHub and adapted them to exhibit the vulnerability. You need to extend/add/do something in a different way to access the higher mark boundaries. Most problems have more than one resolution - try to solve the problem in more than one way. That other way doesn't have to be better or worse, but simply offer another method to solving the problem/expanding the source and the baseline.
 
 Consider sites like the OWASP Juice Shop/Source code on the websites and how to fix them.
+
+The attitude to have: Take one vulnerable part, then add to it.
