@@ -65,4 +65,4 @@ Potential assignment point: criticality and evaluation could be used when determ
 
 ## Week 9: Secure Software Supply Chain
 
-Understand what GHAS does. Try to map high-level frameworks to CI/CD piplines.
+Understand what GHAS does. Try to map high-level frameworks to CI/CD piplines. Beware typosquatting in packages.
