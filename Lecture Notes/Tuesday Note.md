@@ -53,15 +53,13 @@ When data is written outside the boundaries of memory, an overflow occurs.
 
 For the assignment, consider using the Microsoft Secure Development Lifecycle compared to other standards such as ISO/IEC and the OWASP SMM.
 
-The link to this can be found [here][MicrosoftSDLPractices]. STRIDE threat modelling should also be considered and can be read up on [here][STRIDEGuidance]].
+The link to this can be found [here][^MicrosoftSDLPractices]. STRIDE threat modelling should also be considered and can be read up on [here][^STRIDEGuidance].
 
 Potential assignment point: criticality and evaluation could be used when determining which framework is the most appropriate for the assignment project.
 
-![]
+[^MicrosoftSDLPractices]:[https://www.microsoft.com/en-us/securityengineering/sdl/practices]
 
-[MicrosoftSDLPractices]:[https://www.microsoft.com/en-us/securityengineering/sdl/practices]
-
-[STRIDEGuidance]:[https://www.gov.uk/government/publications/secure-connected-places-playbook-documents/conducting-a-stride-based-threat-analysis]
+[^STRIDEGuidance]:[https://www.gov.uk/government/publications/secure-connected-places-playbook-documents/conducting-a-stride-based-threat-analysis]
 
 ## Week 9: Secure Software Supply Chain
 
