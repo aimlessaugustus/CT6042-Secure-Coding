@@ -27,3 +27,9 @@ Ahsan will be happy if we look at inspired examples from GitHub and adapted them
 Consider sites like the OWASP Juice Shop/Source code on the websites and how to fix them.
 
 The attitude to have: Take one vulnerable part, then add to it.
+
+### Risk Assesment for Assignment
+
+Use either the Microsoft Threat Modelling Tool or the OWASP Threat Dragon in order to create a data model, showcase the vulnerabilities and fix the vuln. In combining Risk Assessment with Threat Modelling (IE STRIDE), that part of the assignment will have been completed.
+
+If the vulnerabilities are all tied to one application within the assessment, they can be shown within the report. If you state theen you can demonstrate the process of implementing the risk assessment rather than accuracy.
