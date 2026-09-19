@@ -33,3 +33,8 @@ The attitude to have: Take one vulnerable part, then add to it.
 Use either the Microsoft Threat Modelling Tool or the OWASP Threat Dragon in order to create a data model, showcase the vulnerabilities and fix the vuln. In combining Risk Assessment with Threat Modelling (IE STRIDE), that part of the assignment will have been completed.
 
 If the vulnerabilities are all tied to one application within the assessment, they can be shown within the report. If you state theen you can demonstrate the process of implementing the risk assessment rather than accuracy.
+
+### Potential Approach
+
+- Assess risk before the introduction/discussion of each CVE.
+- Implement the changes and controls for each vunerability.
