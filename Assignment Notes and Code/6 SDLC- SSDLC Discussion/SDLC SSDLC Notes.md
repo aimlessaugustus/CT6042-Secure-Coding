@@ -2,7 +2,7 @@
 
 These are the raw notes on the Software Development Lifecycle/Secure Software Development Lifecycle (SDLC/SSDLC) that I will process into a section of the assignment.
 
-## Software Development Lifecycle
+## Software Development Lifecycle (SDLC)
 
 The Software Development Lifecycle (SDLC) is a structured framework for building software efficiently and predictably. It divides development into measurable phases to improve quality, reduce cost, and ensure projects meet user expectations. Typical stages include Planning, Requirements, Design, Development, Testing, Deployment, and Maintenance.  
 
@@ -16,7 +16,15 @@ The planning phase defines the system’s purpose, scope, and feasibility. It es
 
 #### 2. Requirements Definition
 
-Requirements definition involves gathering all functional and technical needs of the proposed system. This includes listing prototype requirements, evaluating alternatives, and analysing end‑user expectations. Clear requirements determine what the application must achieve and what resources are necessary to build it. Developers often formalise this information in a Software Requirements Specification (SRS), ensuring the system’s purpose, features, and dependencies (such as hardware for specialised manufacturing software) are fully understood before design begins.
+Requirements definition involves gathering all functional and technical needs of the proposed system. This includes listing prototype requirements, evaluating alternatives, and analysing end‑user expectations. Clear requirements determine what the application must achieve and what resources are necessary to build it. Developers often formalise this information in a Software Requirements Specification (SRS), ensuring the system’s purpose, features, and dependencies (such as hardware for specialised manufacturing software) are fully understood before design begins.A Risk Assessment evaluates the likelihood and impact of threats being exploited within a system. It is a core component of secure software development because vulnerabilities, design flaws and poorly reviewed code increase the probability of harmful outcomes. Risk management within the SDLC aims to identify, reduce or eliminate these risks through appropriate controls.
+
+The process begins by assuming the software will be attacked and analysing factors that motivate a threat actor. These include the value of the data handled by the system, the security maturity of dependent services, the scale of software distribution and the expectations of clients. Organisations must define an acceptable level of risk and communicate trade‑offs clearly. For example, the financial impact of data loss may outweigh the cost of fixing security defects, and reputational damage may exceed both.
+
+Risk evaluation considers worst‑case scenarios, the value of assets at risk, the complexity of potential attacks, the number of users affected and the accessibility of the target. High‑impact or easily exploitable risks require mitigation. Understanding whether an attacker can access production systems or only isolated environments is essential for prioritisation.
+
+Different assessment methods exist. A Qualitative Risk Assessment classifies risk as low, medium or high using the relationship between severity and likelihood. A Quantitative Risk Assessment uses numerical values, often based on business criticality, to calculate exposure. Metrics such as Annual Rate of Occurrence and Annual Loss Expectancy help determine whether security controls are cost‑effective.
+
+Risk assessments are most effective early in the SDLC, where they guide design decisions and support security‑by‑design practices.
 
 #### 3. Design and Prototyping
 
@@ -52,3 +60,89 @@ DevOps relies on clear, actionable metrics to understand performance, identify b
 Quality‑focused metrics include the Change Failure Rate, measuring how often production releases require remediation, and Mean Time to Recovery (MTTR), which evaluates how quickly teams restore service after an incident. Automation, small batch work, and continuous feedback loops help improve these metrics by reducing errors and accelerating recovery.
 
 Understanding how different teams perceive risk is essential for DevSecOps adoption. Security teams view risk through vulnerabilities and impact, whereas DevOps teams focus on production stability and failure rates. Aligning these perspectives builds empathy, strengthens collaboration, and supports the introduction of security controls without hindering delivery performance.
+
+## The Secure Software Development Cycle (S-SDLC)
+
+Within the SDLC, testing is introduced very late in the cycle. This makes bugs and flaws more expensive and time-consuming to fix. The S-SDLC model aims to circumvent this by introducing security at every stage of the SDLC. By detecting and resolving vulnerabilities early, costs are reduced and security awareness at an organisational level is increased.
+
+### Implementing a Secure SDLC
+
+A Secure SDLC introduces security activities into every phase of software development. Security requirements, testing and assurance evolve alongside functional design. Effective implementation begins with understanding the organisation’s security posture. This involves performing a gap analysis to identify existing policies and procedures, establishing Software Security Initiatives with measurable goals, formalising processes so that teams can adopt them gradually, and investing in early security training and tooling to support operational use.
+
+Once the posture is understood, security processes are integrated into the SDLC. A Risk Assessment identifies security considerations during planning and requirements gathering, which promotes security by design. Threat Modelling follows during the design phase and focuses on what must not occur, ensuring safeguards are defined. During development, Code Scanning and Review detects vulnerabilities early through manual and automated testing. In later stages, Security Assessments such as vulnerability assessments and penetration testing validate security controls and identify exploitable flaws.
+
+Understanding how teams perceive risk helps DevSecOps engineers build empathy and secure buy‑in. This alignment supports the introduction of security controls without hindering delivery performance or operational stability.
+
+#### Risk Assessments
+
+A Risk Assessment evaluates the likelihood and impact of threats being exploited within a system. It is a core component of secure software development because vulnerabilities, design flaws and poorly reviewed code increase the probability of harmful outcomes. Risk management within the SDLC aims to identify, reduce or eliminate these risks through appropriate controls.
+
+The process begins by assuming the software will be attacked and analysing factors that motivate a threat actor. These include the value of the data handled by the system, the security maturity of dependent services, the scale of software distribution and the expectations of clients. Organisations must define an acceptable level of risk and communicate trade‑offs clearly. For example, the financial impact of data loss may outweigh the cost of fixing security defects, and reputational damage may exceed both.
+
+Risk evaluation considers worst‑case scenarios, the value of assets at risk, the complexity of potential attacks, the number of users affected and the accessibility of the target. High‑impact or easily exploitable risks require mitigation. Understanding whether an attacker can access production systems or only isolated environments is essential for prioritisation.
+
+Different assessment methods exist. A Qualitative Risk Assessment classifies risk as low, medium or high using the relationship between severity and likelihood. A Quantitative Risk Assessment uses numerical values, often based on business criticality, to calculate exposure. Metrics such as Annual Rate of Occurrence and Annual Loss Expectancy help determine whether security controls are cost‑effective.
+
+Qualitative Risk Assessment Formula: Risk = Severity x Likelihood
+
+Risk assessments are most effective early in the SDLC, where they guide design decisions and support security‑by‑design practices.
+
+#### Threat Modelling
+
+Threat Modelling is a structured technique used during the design phase of the SDLC to identify potential security threats before any code is written. It focuses on understanding how an attacker might compromise a system and prioritising safeguards that protect assets identified as high‑value or high‑risk during the risk assessment stage. Introducing threat modelling early allows teams to detect design issues before implementation, reducing remediation costs and strengthening security by design.
+
+Different methodologies exist, each suited to specific organisational needs. STRIDE is a widely adopted model developed by Microsoft. It evaluates system design using data‑flow diagrams and categorises threats into Spoofing, Tampering, Repudiation, Information Disclosure, Denial of Service and Elevation of Privilege. STRIDE aligns with the confidentiality, integrity and availability principles and helps engineers answer the question: “What could go wrong with this system”.
+
+DREAD provides a scoring‑based approach that ranks threats according to Damage, Reproducibility, Exploitability, Affected Users and Discoverability. Each factor is scored from 0 to 10, allowing teams to prioritise threats based on severity and likelihood.
+
+PASTA offers a more strategic, business‑aligned methodology. It consists of seven stages, including defining objectives, mapping technical scope, analysing trust boundaries, identifying threats, assessing vulnerabilities, modelling attack paths and evaluating risk impact. PASTA is particularly effective for organisations that require alignment between technical risks and business goals.
+
+Threat modelling complements risk assessment by focusing on what must not occur within a system. When integrated consistently, it provides early visibility of weaknesses, supports informed design decisions and strengthens the overall security posture of the software.
+
+### Security Assessments
+
+Security assessments are a key component of a secure software development lifecycle. They evaluate systems, applications and infrastructure for weaknesses, misconfigurations and potential attack paths. Although security considerations should be present throughout development, full assessments are typically performed once a system is complete and deployed, allowing testers to examine the application from an end‑to‑end perspective. Two primary assessment types are used: vulnerability assessments and penetration testing.
+
+#### Vulnerability Assessment
+
+A vulnerability assessment identifies potential weaknesses without attempting to exploit them. Automated scanners analyse systems, services and network assets to detect outdated software versions, exposed ports, insecure configurations and known vulnerabilities. Findings are usually categorised by severity, enabling teams to prioritise remediation. Vulnerability assessments are efficient, cost‑effective and suitable for organisations that need broad visibility of potential risks. However, they do not determine whether a vulnerability is practically exploitable, and they may produce large volumes of findings that require further investigation. Examples of tools: are OpenVAS, Nessus (Tenable), and ISS Scanner.
+
+#### Penetration Testing
+
+Penetration testing extends vulnerability assessment by validating and exploiting identified weaknesses. Testers simulate real‑world attacks to understand how vulnerabilities could be used to compromise systems, escalate privileges or access sensitive data. This provides a realistic view of risk by demonstrating actual impact rather than theoretical severity. Penetration tests produce detailed reports that include exploitation steps, risk evaluation and recommended countermeasures. They require specialist expertise, careful planning and greater financial investment, making them more resource‑intensive than automated scanning.
+
+####
+
+| Assessment Type | Purpose | Strengths | Limitations |
+| --- | --- | --- | --- |
+| Vulnerability Assessment | Identify potential weaknesses across systems and services | Fast, automated, cost‑effective; broad coverage | Does not validate exploitability; may generate large volumes of findings; low‑risk issues may contribute to larger attack chains |
+| Penetration Testing | Validate and exploit vulnerabilities to demonstrate real‑world impact | Provides realistic risk insight; shows how attackers could behave; produces detailed remediation guidance | Expensive; time‑consuming; requires specialist expertise and planning |
+
+#### Choosing an Approach
+
+Both assessment types serve different purposes. Vulnerability assessments provide rapid visibility and are suitable for regular scanning, while penetration testing offers deeper insight into real‑world exploitability and business impact. Mature security programmes typically combine both approaches to ensure comprehensive coverage. Automated scanning identifies weaknesses early, while targeted manual testing validates critical risks and supports effective prioritisation.
+
+## SSDLC Methodologies
+
+Secure Software Development Lifecycle (SSDLC) methodologies provide structured approaches for embedding security throughout software development. Regardless of whether a team follows Agile, DevOps, Waterfall or another model, two principles remain essential: build with security in mind and introduce security‑focused testing at every stage. Several recognised methodologies support these aims, including Microsoft’s Security Development Lifecycle (SDL), the OWASP Secure SDLC (S‑SDLC) and maturity‑based models such as SAMM and BSIMM.
+
+### Microsoft SDL
+
+Microsoft SDL is a comprehensive framework built around mandatory security activities aligned with traditional SDLC phases. It emphasises secure design, secure defaults, secure deployment and effective communication. SDL requires teams to define and maintain security requirements, perform threat modelling, establish design requirements, enforce cryptography standards and manage risks associated with third‑party components. It also mandates the use of approved tools, security testing techniques such as SAST, DAST and IAST, and formal security assessments. A standardised incident response process ensures organisations can react effectively to emerging threats. SDL is structured, prescriptive and designed to ensure consistent security practices across engineering teams.
+
+### OWASP S‑SDLC
+
+OWASP’s S‑SDLC methodology focuses on building “security quality gates” throughout the development pipeline. It adopts an Agile Security approach, where dedicated sprints address specific security concerns such as authentication, authorisation, input validation and injection risks. These gates ensure that security tasks are treated as core development activities. The methodology is heavily influenced by the Software Assurance Maturity Model (SAMM), which helps organisations evaluate their current security posture, define objectives, measure progress and build a tailored security programme. BSIMM complements this by providing real‑world benchmarking across hundreds of organisations, helping teams understand how their practices compare to industry peers.
+
+### Comparison Table
+
+| Methodology | Focus | Strengths | Limitations |
+| --- | --- | --- | --- |
+| Microsoft SDL | Mandatory security activities across SDLC phases | Strong structure; comprehensive practices; mature tooling | Can be heavy‑weight; requires significant organisational effort |
+| OWASP S‑SDLC | Security gates and Agile Security sprints | Flexible; integrates well with Agile; supports iterative improvement | Requires disciplined sprint planning; maturity varies by team |
+| SAMM | Maturity‑based evaluation and improvement | Tailored to organisational risk; strong measurement and governance | Does not prescribe specific technical controls |
+| BSIMM | Benchmarking against industry practices | Real‑world insight; useful for posture comparison | Descriptive rather than prescriptive; does not define required actions |
+
+### Choosing an Approach
+
+Organisations often combine elements from multiple SSDLC methodologies. SDL provides structure and mandatory activities, OWASP S‑SDLC offers Agile‑friendly security integration, SAMM supports maturity‑based improvement and BSIMM provides benchmarking. Together, these approaches help teams embed security deeply into development processes, improve consistency and ensure that security evolves alongside functional requirements.
