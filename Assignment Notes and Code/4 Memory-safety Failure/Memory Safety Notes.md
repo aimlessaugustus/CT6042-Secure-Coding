@@ -4,7 +4,7 @@
 
 NGINX Open Source is the world's most popular Web Server, high performance Load Balancer, Reverse Proxy, API Gateway and Content Cache,being used in roughly one third of websites today [^NGINXGithub][^depthfirstRift]. NGINX Rift (CVE-2026-42945) is a heap buffer overflow affecting NGINX Open Source versions 0.6.27 - 1.30.1 which enables Remote Code Execution (RCE) on a target machine [^NGINXRiftNIST] [^cve202642945].
 
-The vulnerability exists within the `ngx_http_rewrite_module` when rewrite rules are chained, specifically when the `rewrite`, `set` and `if` directives interact with unnamed regex captures. The following example below (taken from the proof of concept GitHub) shows how rewrite might be implemented legitimately within an NGINX server.
+The vulnerability exists within the `ngx_http_rewrite_module` when rewrite rules are chained, specifically when the `rewrite`, `set` and `if` directives interact with unnamed regex captures. The following example below (taken from the proof of concept GitHub) shows how rewrite might be implemented legitimately within an NGINX server within `nginx.conf` [^NGINXRiftGitHub].
 
 ```nginx
 location ~ ^/api/(.*)$ {
@@ -22,12 +22,12 @@ NGINX compiles directive sequences into bytecode executed by a script engine (`n
 
 #### Exploitation path to code execution
 
-A heap overflow must overwrite a useful target to become code execution. NGINX per-request pools (`ngx_pool_t`) include a cleanup list of `ngx_pool_cleanup_t` entries; each entry contains a function pointer and an argument pointer. When a pool is destroyed, NGINX iterates the cleanup list and calls `handler(data)`. An attacker who can corrupt a cleanup entry so that the handler and argument are attacker controlled can cause the worker to call an attacker-chosen function with attacker-chosen data. The published exploitation technique arranges pool adjacency across connections, overflows from one pool into the next, and then triggers destruction of the corrupted pool before other corrupted fields are dereferenced. Memory spraying of fake cleanup entries via POST bodies supplies raw binary pointers that survive escaping. Repeated low-byte overwrites converge on a sprayed target; with ASLR disabled this yields practical RCE. With ASLR enabled the overflow remains a reliable denial-of-service primitive.
+A heap overflow must overwrite a useful target to become code execution. NGINX per-request pools (`ngx_pool_t`) include a cleanup list of `ngx_pool_cleanup_t` entries; each entry contains a function pointer and an argument pointer. When a pool is destroyed, NGINX iterates the cleanup list and calls `handler(data)`. An attacker who can corrupt a cleanup entry so that the handler and argument are attacker controlled can cause the worker to call an attacker-chosen function with attacker-chosen data. The published exploitation technique arranges pool adjacency across connections, overflows from one pool into the next, and then triggers destruction of the corrupted pool before other corrupted fields are dereferenced. Memory spraying of fake cleanup entries via POST bodies supplies raw binary pointers that survive escaping, whilst low-byte overwrites converge on a sprayed target. With ASLR disabled, this results in RCE. With ASLR enabled, the overflow still enables a threat actor to perform a denial of service attack on a target system.
 
 #### Classification and Security Context
 
 - Assigned a CVSS 3.1 score of 8.1 [^NGINXRiftNIST].
-- Maps to CWE-122: Heap-based Buffer Overflow and CWE-704: Incorrect Type Conversion or Cast in the sense of incorrect size accounting, the root is a logic error in two-pass size computation.  
+- Maps to CWE-131: Incorrect Calculation of Buffer Size, escalating to CWE-119: Improper Restriction of Operations within the Bounds of a Memory Buffer when the vulnerability is exploited for either RCE or DoS [^RedHatNginxRift] [^CWE131] [^CWE119].
 - OWASP: Relates to risks from vulnerable components and unsafe memory handling in server-side software; it exemplifies how documented features can combine to create a critical vulnerability.  
 - Nature of weakness: Implementation-level state inconsistency in a stateful script engine, not malformed input parsing.
 
@@ -57,3 +57,11 @@ CVE-2026-42945 affects NGINX Open Source and NGINX Plus when `rewrite` is follow
 [^NGINXRiftNIST]: <https://nvd.nist.gov/vuln/detail/cve-2026-42945>
 
 [^depthfirstRift]: <https://depthfirst.com/research/nginx-rift-achieving-nginx-rce-via-an-18-year-old-vulnerability>
+
+[^RedHatNginxRift]: <https://access.redhat.com/security/cve/cve-2026-42945#cve-cwe>
+
+[^CWE131]: <https://cwe.mitre.org/data/definitions/131.html>
+
+[^CWE119]: <https://cwe.mitre.org/data/definitions/119.html>
+
+[^NGINXRiftGitHub]: <https://github.com/DepthFirstDisclosures/Nginx-Rift/blob/main/Nginx-Rift/env/nginx.conf>
