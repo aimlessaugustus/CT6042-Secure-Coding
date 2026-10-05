@@ -10,6 +10,8 @@ This maps to CVE-2022-28382, which can be referenced within the report[^CVE20222
 
 ### Vulnerability Explanation: Underlying Security Theory, Relevant Weaknesses and Classification
 
+AES requires the input for each block to be of fixed size for each round of encryption. For the last block to be encrypted, padding is used.
+
 ### Demonstration of Exploitability
 
 ### Identifying the Vulnerability Using Techniques and Tools
