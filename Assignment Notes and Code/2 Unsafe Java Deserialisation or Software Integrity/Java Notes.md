@@ -1,6 +1,6 @@
 # Java Deserialisation
 
-## Potential Avenue: Solar (Log4j)
+## CVE-2021-44228: Solar (Log4j)
 
 ### Vulnerability Explanation: Underlying Security Theory, Relevant Weaknesses and Classification
 
