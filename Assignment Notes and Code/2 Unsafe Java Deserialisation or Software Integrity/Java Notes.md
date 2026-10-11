@@ -20,9 +20,26 @@ Object injection is a vulnerability that arises from insecure data deserialisati
 
 Ysoserial is a widely recognised exploitation tool specifically crafted to test the security of Java applications against serialisation vulnerabilities. It helps generate payloads that exploit these vulnerabilities, making it an essential tool for attackers and penetration testers who aim to assess and exploit applications that use Java serialisation.
 
-To use Ysoserial, an attacker would typically generate a payload with a command such as java -jar ysoserial.jar [payload type] '[command to execute]', where [payload type] is the type of exploit and [command to execute] is the arbitrary command they wish to run on the target system. For example, using the CommonsCollections1 payload type might look like this: java -jar ysoserial.jar CommonsCollections1 'calc.exe'. This command generates a serialised object that will execute the specified command when deserialised by a vulnerable application. Ysoserial is available for download on GitHub.
+To use Ysoserial, an attacker would typically generate a payload with a command such as `java -jar ysoserial.jar [payload type] '[command to execute]'`, where `[payload type]` is the type of exploit and `[command to execute]` is the arbitrary command they wish to run on the target system. For example, using the `CommonsCollections1` payload type might look like this: `java -jar ysoserial.jar CommonsCollections1 'calc.exe'`. This command generates a serialised object that will execute the specified command when deserialised by a vulnerable application. Ysoserial is available for download on GitHub.
 
 ### How to Mitigate the Vulnerability
+
+#### Fixing deserealisation at a generic level
+
+There are two main perspectives for mitigation of deserialisation issues: the pentesting side and the secure coder side. From the offensive side, people can do the following:
+
+- Codebase Analysis: Review the application’s serialization methods in detail. Identify potential points of serialization and deserialization within the codebase.
+- Vulnerability Identification: Use static analysis tools to detect insecure deserialization issues. Inspect for outdated dependencies, unsafe libraries, and insufficient input validation.
+- Fuzzing and Dynamic Analysis: Apply fuzzing techniques to generate unexpected or faulty input data. Utilize dynamic analysis tools to monitor application behavior during runtime.
+- Error Handling Evaluation: Assess the application’s response to deserialization errors. Look for stack traces or error messages that may reveal system information.
+
+From the Security Engineer's perspective, the following can be done:
+
+- Use secure serialisation methods: Avoid insecure serialisation mechanisms and adopt safer formats such as JSON or XML with appropriate validation controls.
+- Restrict dynamic code execution: Do not use functions such as eval() or exec(), as they can enable arbitrary code execution.
+- Validate and sanitise data: Enforce strict input validation and apply appropriate sanitisation and encoding techniques to all data before processing.
+- Follow secure development principles: Implement security best practices, including least privilege, defence in depth, and secure-by-default configurations.
+- Comply with secure coding standards: Adhere to established security guidelines and framework-specific coding standards throughout the development lifecycle.
 
 ### Retesting For Resilience
 
