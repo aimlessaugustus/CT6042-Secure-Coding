@@ -4,13 +4,18 @@
 
 ### Vulnerability Explanation: Underlying Security Theory, Relevant Weaknesses and Classification
 
-CVE-2021-44228, colloqiually known as Solar, is a vulnerability that allows attackers to achieve remote code execution by exploiting insecure deserialisation in the Apache Log4j 2 library, a widely used logging library in Java applications.
+CVE-2021-44228, colloqiually known as Solar, is a vulnerability that allows attackers to achieve remote code execution by exploiting insecure deserialisation in the Apache Log4j 2 library, a widely used logging library in Java applications. This enabled attackers to execute commands on targeted hosts, disrupting infrastructure and causing supply chain failiures.
 
-Insecure deserialisation occurs when a web application trusts serialised data without taking steps to validate it's authenticity.
+Insecure deserialisation occurs when a web application trusts serialised data without taking steps to validate it's authenticity. This can allow attackers to take advantage of
 
 ### Demonstration of Exploitability
 
 ### Identifying the Vulnerability Using Techniques and Tools
+
+Ysoserial for Java
+
+Ysoserial is a widely recognised exploitation tool specifically crafted to test the security of Java applications against serialisation vulnerabilities. It helps generate payloads that exploit these vulnerabilities, making it an essential tool for attackers and penetration testers who aim to assess and exploit applications that use Java serialisation.
+To use Ysoserial, an attacker would typically generate a payload with a command such as java -jar ysoserial.jar [payload type] '[command to execute]', where [payload type] is the type of exploit and [command to execute] is the arbitrary command they wish to run on the target system. For example, using the CommonsCollections1 payload type might look like this: java -jar ysoserial.jar CommonsCollections1 'calc.exe'. This command generates a serialised object that will execute the specified command when deserialised by a vulnerable application. Ysoserial is available for download on GitHub.
 
 ### How to Mitigate the Vulnerability
 
