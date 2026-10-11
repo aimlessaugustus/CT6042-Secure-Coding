@@ -10,9 +10,25 @@ This maps to CVE-2022-28382, which can be referenced within the report[^CVE20222
 
 ### Vulnerability Explanation: Underlying Security Theory, Relevant Weaknesses and Classification
 
-AES requires the input for each block to be of fixed size for each round of encryption. For the last block to be encrypted, padding is used.
+When encrypting using AES, the message is required to be broken into blocks of 16 bytes. [When there is insufficient data to completely fill a block, such as during the final round, padding is added to meet this requirement.] To chain these individual blocks together, cipher modes such as electronic codebook ECB are employed. ECB functions by encrypting each block independently, which provides insufficient diffusion to properly obfuscate larger datasets and images. Using ECB in these instances results in a large number of repeatable
 
 ### Demonstration of Exploitability
+
+To convert .bmp images using ECB, the following can produce
+
+```bash
+head -c 54 test.bmp > test.header
+tail -c +54 test.bmp > test.body
+openssl enc -aes-128-ecb -nosalt -pass pass:"superpassword" -in test.body -out test.body.ecb
+cat test.header test.body.ecb > test.ecb.bmp
+```
+
+```bash
+head -c 54 test.bmp > test.header
+tail -c +54 test.bmp > test.body
+openssl enc -aes-128-cbc -nosalt -pass pass:"superpassword" -in test.body -out test.body.cbc
+cat test.header test.body.cbc > test.cbc.bmp
+```
 
 ### Identifying the Vulnerability Using Techniques and Tools
 
