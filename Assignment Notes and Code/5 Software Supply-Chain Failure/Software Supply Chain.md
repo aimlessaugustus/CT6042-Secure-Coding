@@ -6,6 +6,24 @@
 
 ### How to Mitigate the Vulnerability
 
+#### Detecting and Mitigating Supply Chain Attacks (Broadly)
+
+Organisations can use Security Information and Event Management (SIEM) platforms to identify indicators of supply chain compromise by analysing logs for unusual or unauthorised activity. For example, unexpected connections to cryptocurrency-related services or known malicious domains may indicate a compromised third-party dependency and should be investigated or blocked.
+
+Key defensive measures include:
+
+- **Monitoring Web Traffic:** Analyse web and application logs for unexpected requests originating from third-party libraries, particularly communications with unknown external domains or suspicious endpoints. However, some malicious JavaScript-based supply chain attacks may execute on the client side and leave little or no evidence in server logs.
+
+- **Tracking Dependency Updates:** Maintain records of dependency and package version changes. Updates to widely used libraries should be reviewed against official release notes and verified sources to identify potentially malicious modifications.
+
+- **Configuring Security Alerts:** Implement automated alerts for abnormal behaviours, such as unauthorised outbound connections, unexpected API calls, or interactions with cryptocurrency services that could suggest a compromise.
+
+- **Restricting Access and Permissions:** Protect software distribution and development accounts by enforcing multi-factor authentication (MFA), limiting privileged access, regularly rotating credentials, and securing publishing tokens.
+
+- **Using Trusted Sources:** Obtain software packages only from reputable registries, official vendors, or internally approved repositories to reduce exposure to malicious or tampered dependencies.
+
+- **Implementing Dependency Management Controls:** Deploy dependency monitoring and integrity-checking tools to detect unauthorised code changes, suspicious package updates, and other indicators of supply chain compromise throughout the software development lifecycle.
+
 ### Retesting For Resilience
 
 ## Marking Scheme (For Reference)
