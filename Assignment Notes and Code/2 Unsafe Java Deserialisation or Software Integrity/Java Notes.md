@@ -1,10 +1,10 @@
 # Java Deserialisation
 
-## CVE-2021-44228: Solar (Log4j)
+## CVE-2023-37895: Apache Jackrabbit RMI access can lead to RCE
 
 ### Vulnerability Explanation: Underlying Security Theory, Relevant Weaknesses and Classification
 
-CVE-2021-44228, colloqiually known as Solar, is a vulnerability that allows attackers to achieve remote code execution by exploiting insecure deserialisation in the Apache Log4j 2 library, a widely used logging library in Java applications. This enabled attackers to execute commands on targeted hosts, disrupting infrastructure and causing supply chain failiures.
+#### Deserialisation as a concept within Java
 
 Insecure deserialisation occurs when a web application trusts serialised data without taking steps to validate it's authenticity. In Java, object serialisation is facilitated through the `Serializable` interface, allowing objects to be converted into byte streams and vice versa for network communication and data persistence.
 
@@ -49,3 +49,9 @@ From the Security Engineer's perspective, the following can be done:
 | --- | --- | --- | --- | --- |
 | **80+** | Extraordinary and authoritative understanding of the five selected software errors, including root causes, exploit mechanisms, secure mitigations, verification, the Security Development Life Cycle and product risk. | Exceptional critical analysis of vulnerable and mitigated code. Exploitation, appropriate tool‑assisted testing and retesting are interpreted rigorously; security decisions, limitations and residual risks are evaluated convincingly. | Extensive, independent and critical research. Authoritative standards and high‑quality academic or technical sources are integrated throughout to substantiate technical claims, mitigations, lifecycle discussion and risk analysis. | Lively, precise and professional report with exceptional control of argument. Code, screenshots and tool results are clearly captioned, referenced and explained; appendices are complete; virtually error‑free. |
 | **70–79** | Excellent and wide‑ranging understanding of the five software errors, their causes, exploitation, mitigation and retesting, with confident understanding of secure development lifecycle and risk principles. | Excellent and consistent analysis of practical evidence. Vulnerable and mitigated code, exploits, security‑tool findings and retests are interpreted critically, with well‑justified controls and thoughtful consideration of limitations and residual risk. | Excellent independent research using a wide range of relevant academic and authoritative technical sources. Evidence is selected critically, integrated effectively and used consistently to support claims. | Excellent, coherent and professional presentation with strong control of argument. Figures, code and test evidence are consistently captioned, referenced and discussed; source‑code appendices are complete; very few errors. |
+
+## Sources
+
+<https://nvd.nist.gov/vuln/detail/cve-2023-37895>
+
+<https://www.cve.org/CVERecord?id=CVE-2023-37895>
