@@ -6,6 +6,8 @@
 
 CVE-2021-44228, colloqiually known as Solar, is a vulnerability that allows attackers to achieve remote code execution by exploiting insecure deserialisation in the Apache Log4j 2 library, a widely used logging library in Java applications. This enabled attackers to execute commands on targeted hosts, disrupting infrastructure and causing supply chain failiures.
 
+#### Deserialisation in general
+
 Insecure deserialisation occurs when a web application trusts serialised data without taking steps to validate it's authenticity. In Java, object serialisation is facilitated through the `Serializable` interface, allowing objects to be converted into byte streams and vice versa for network communication and data persistence.
 
 Deserialisation errors can be identified by either analyzing the source code of a Java application for use of the `Serializable` module, or by performing black box testing using a tool such as Ysoserial.
