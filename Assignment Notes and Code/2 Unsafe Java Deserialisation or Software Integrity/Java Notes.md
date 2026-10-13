@@ -19,9 +19,9 @@ Linked CWEs: [^NIST2026Log4Shell][^CVEOrg2023Log4Shell]
 
 CVE-2021-44228, colloqiually known as Log4Shell, is a vulnerability that allows attackers to achieve remote code execution by exploiting insecure deserialisation in the Apache Log4j 2 library, a widely used logging library in Java applications. By default, Log4j will evaluate parameters in logs, enabling the lookup of remote servers.
 
-One of the key features of Log4j is the ability to interpret strings to enrich log messages, wrapped within `${prefix:query}` [^Hiesgen2024Log4Shell]. Whilst this could be used for legitimate purposes such as idenfying hostnames within logs, `Apache Log4j2 2.0-beta9` through `2.15.0` accepts a prefix that triggers a JNDI lookup, enabling an attacker to link to a controlled LDAP server. There is no validation against this implemented within `Solr 8.11.0`, nor is there validation against serialised objects recieved from external servers, which enables RCE from crafted serialised objects when an attacker is able to control log messages or log message parameters [^NIST2026Log4Shell].
+One of the key features of Log4j is the ability to interpret strings to enrich log messages, wrapped within `${prefix:query}` [^Hiesgen2024Log4Shell]. Whilst this could be used for legitimate purposes such as idenfying hostnames within logs, `Apache Log4j2 2.0-beta9` through `2.15.0` accepts a prefix that triggers a JNDI lookup, enabling an attacker to link to a controlled LDAP server. Within specific applications that use Log4j, there is no validation against of recieved serialised objects, as is the case with `Solr 8.11.0`, which enables RCE from crafted serialised objects when an attacker is able to control log messages or log message parameters [^NIST2026Log4Shell].
 
-Apache Solr is a search server that is designed for document retrieval and analytical applications on structured and unstructured datasets [^Deniz2023ApacheSolr]. The following flow diagram illustrates the deserialisation vulnerability as it would occur during runtime, as well as the intended (patched) flow of the program.
+Apache Solr is a search server that is designed for document retrieval and analytical applications on structured and unstructured datasets [^Deniz2023ApacheSolr][^Apache2021SolrOverview]. When clients request documents or authenticate to a server, Solr uses `Log4j 2.14.1` to document the request, which is vulnerable to the Log4Shell exploit. The following flow diagram illustrates the deserialisation vulnerability as it would occur within Apache Solr during runtime, as well as the intended (patched) flow of the program.
 
 The Log4Shell vulnerability was estimated to be present within 10% of all digital assets, enabling attackers to conduct a wide array of activities such as data exfiltration, ransomware installation and denial of service [^IBM2023Log4Shell][^Hiesgen2024Log4Shell].
 
@@ -91,6 +91,8 @@ From the Security Engineer's perspective, the following can be done:
 
 -->
 
+ Due to CVE-2021-44228 being discovered after `Solr 8.11.0` had been published, mitigation and remediation would take place during the Maintenance and Operations phase of the Software Development Lifecycle.For complete remediation against Log4Shell, the developers at Apache would need to update Log4j to version `2.17.1` or later
+
 ### Retesting For Resilience
 
 ## Marking Scheme (For Reference)
@@ -108,3 +110,4 @@ From the Security Engineer's perspective, the following can be done:
 [^IBM2023Log4Shell]: <https://www.ibm.com/think/topics/log4shell>
 [^Hiesgen2024Log4Shell]: <https://ieeexplore.ieee.org/document/10628102>
 [^Apache2021SolrAdminUI]: <https://solr.apache.org/guide/8_11/overview-of-the-solr-admin-ui.html>
+[^Apache2021SolrOverview]: <https://solr.apache.org/guide/8_11/a-quick-overview.html>
