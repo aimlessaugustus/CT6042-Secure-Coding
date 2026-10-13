@@ -17,7 +17,7 @@ Linked CWEs: [^NIST2026Log4Shell][^CVEOrg2023Log4Shell]
 
 <!-- #### Regarding Log4Shell Specifically -->
 
-CVE-2021-44228, colloqiually known as Log4Shell, is a vulnerability that allows attackers to achieve remote code execution by exploiting insecure deserialisation in the Apache Log4j 2 library, a widely used logging library in Java applications. By default, Log4J will evaluate parameters in logs, enabling the lookup of remote servers.
+CVE-2021-44228, colloqiually known as Log4Shell, is a vulnerability that allows attackers to achieve remote code execution by exploiting insecure deserialisation in the Apache Log4j 2 library, a widely used logging library in Java applications. By default, Log4j will evaluate parameters in logs, enabling the lookup of remote servers.
 
 One of the key features of Log4j is the ability to interpret strings to enrich log messages, wrapped within `${prefix:query}` [^Hiesgen2024Log4Shell]. Whilst this could be used for legitimate purposes such as idenfying hostnames within logs, `Apache Log4j2 2.0-beta9` through `2.15.0` accepts a prefix that triggers a JNDI lookup, enabling an attacker to link to a controlled LDAP server. There is no validation against this implemented within `Solr 8.11.0`, nor is there validation against serialised objects recieved from external servers, which enables RCE from crafted serialised objects when an attacker is able to control log messages or log message parameters [^NIST2026Log4Shell].
 
