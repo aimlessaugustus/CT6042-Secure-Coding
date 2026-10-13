@@ -37,6 +37,8 @@ Object injection is a vulnerability that arises from insecure data deserialisati
 
 ### Identifying the Vulnerability Using Techniques and Tools
 
+The presence of `Apache Solr 8.11.0` on a machine can be confirmed through the use of `nmap -v -p` on the target machine, which can be seen operating on port 8983 by default.
+
 #### Ysoserial for Java
 
 Ysoserial is a widely recognised exploitation tool specifically crafted to test the security of Java applications against serialisation vulnerabilities. It helps generate payloads that exploit these vulnerabilities, making it an essential tool for attackers and penetration testers who aim to assess and exploit applications that use Java serialisation.
