@@ -1,0 +1,85 @@
+<mxfile host="65bd71144e">
+    <diagram id="AtPIgGalABai3sf17EXV" name="Flow Diagram of where things go wrong">
+        <mxGraphModel dx="594" dy="1182" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="QA5lD1XoMoLC1UA6TjtG-10" edge="1" parent="1" source="QA5lD1XoMoLC1UA6TjtG-1" style="edgeStyle=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="QA5lD1XoMoLC1UA6TjtG-4">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="QA5lD1XoMoLC1UA6TjtG-1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;roundedPerimeter=1;" value="Client sends a request for a document containing a lookup" vertex="1">
+                    <mxGeometry height="80" width="120" x="200" y="240" as="geometry"/>
+                </mxCell>
+                <mxCell id="QA5lD1XoMoLC1UA6TjtG-3" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;h1&gt;Log4J Flow in Apache Solr&lt;/h1&gt;" vertex="1">
+                    <mxGeometry height="80" width="280" x="120" y="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="QA5lD1XoMoLC1UA6TjtG-11" edge="1" parent="1" source="QA5lD1XoMoLC1UA6TjtG-4" style="edgeStyle=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="QA5lD1XoMoLC1UA6TjtG-9">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="QA5lD1XoMoLC1UA6TjtG-18" edge="1" parent="1" source="QA5lD1XoMoLC1UA6TjtG-4" style="edgeStyle=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="QA5lD1XoMoLC1UA6TjtG-15">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="QA5lD1XoMoLC1UA6TjtG-4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;roundedPerimeter=1;" value="Solr logs the request, with paremeters entering the log line." vertex="1">
+                    <mxGeometry height="80" width="120" x="200" y="360" as="geometry"/>
+                </mxCell>
+                <mxCell id="QA5lD1XoMoLC1UA6TjtG-13" edge="1" parent="1" source="QA5lD1XoMoLC1UA6TjtG-5" style="edgeStyle=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="QA5lD1XoMoLC1UA6TjtG-6">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="QA5lD1XoMoLC1UA6TjtG-5" parent="1" style="rounded=1;whiteSpace=wrap;html=1;roundedPerimeter=1;fillColor=#f8cecc;strokeColor=#b85450;" value="JDNI resolves the name and contacts attacker LDAP server" vertex="1">
+                    <mxGeometry height="80" width="120" x="120" y="600" as="geometry"/>
+                </mxCell>
+                <mxCell id="QA5lD1XoMoLC1UA6TjtG-14" edge="1" parent="1" source="QA5lD1XoMoLC1UA6TjtG-6" style="edgeStyle=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="QA5lD1XoMoLC1UA6TjtG-7">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="QA5lD1XoMoLC1UA6TjtG-6" parent="1" style="rounded=1;whiteSpace=wrap;html=1;roundedPerimeter=1;fillColor=#f8cecc;strokeColor=#b85450;" value="LDAP server replies with serialised object" vertex="1">
+                    <mxGeometry height="80" width="120" x="120" y="720" as="geometry"/>
+                </mxCell>
+                <mxCell id="QA5lD1XoMoLC1UA6TjtG-17" edge="1" parent="1" source="QA5lD1XoMoLC1UA6TjtG-7" style="edgeStyle=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="QA5lD1XoMoLC1UA6TjtG-16">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="QA5lD1XoMoLC1UA6TjtG-7" parent="1" style="rounded=1;whiteSpace=wrap;html=1;roundedPerimeter=1;fillColor=#f8cecc;strokeColor=#b85450;" value="JVM loads or deserealises object without validation" vertex="1">
+                    <mxGeometry height="80" width="120" x="120" y="840" as="geometry"/>
+                </mxCell>
+                <mxCell id="QA5lD1XoMoLC1UA6TjtG-12" edge="1" parent="1" source="QA5lD1XoMoLC1UA6TjtG-9" style="edgeStyle=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="QA5lD1XoMoLC1UA6TjtG-5">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="QA5lD1XoMoLC1UA6TjtG-9" parent="1" style="rounded=1;whiteSpace=wrap;html=1;roundedPerimeter=1;fillColor=#f8cecc;strokeColor=#b85450;" value="Log4j evaluates the lookup during formatting" vertex="1">
+                    <mxGeometry height="80" width="120" x="120" y="480" as="geometry"/>
+                </mxCell>
+                <mxCell id="QA5lD1XoMoLC1UA6TjtG-23" edge="1" parent="1" source="QA5lD1XoMoLC1UA6TjtG-15" style="edgeStyle=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="QA5lD1XoMoLC1UA6TjtG-19">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="QA5lD1XoMoLC1UA6TjtG-15" parent="1" style="rounded=1;whiteSpace=wrap;html=1;roundedPerimeter=1;fillColor=#d5e8d4;strokeColor=#82b366;" value="Lookup Treated as Plaintext Data" vertex="1">
+                    <mxGeometry height="80" width="120" x="280" y="480" as="geometry"/>
+                </mxCell>
+                <mxCell id="QA5lD1XoMoLC1UA6TjtG-16" parent="1" style="rounded=1;whiteSpace=wrap;html=1;roundedPerimeter=1;fillColor=#f8cecc;strokeColor=#b85450;" value="RCE on victim" vertex="1">
+                    <mxGeometry height="60" width="120" x="120" y="960" as="geometry"/>
+                </mxCell>
+                <mxCell id="QA5lD1XoMoLC1UA6TjtG-24" edge="1" parent="1" source="QA5lD1XoMoLC1UA6TjtG-19" style="edgeStyle=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="QA5lD1XoMoLC1UA6TjtG-20">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="QA5lD1XoMoLC1UA6TjtG-19" parent="1" style="rounded=1;whiteSpace=wrap;html=1;roundedPerimeter=1;fillColor=#d5e8d4;strokeColor=#82b366;" value="No outbound call" vertex="1">
+                    <mxGeometry height="80" width="120" x="280" y="600" as="geometry"/>
+                </mxCell>
+                <mxCell id="QA5lD1XoMoLC1UA6TjtG-25" edge="1" parent="1" source="QA5lD1XoMoLC1UA6TjtG-20" style="edgeStyle=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="QA5lD1XoMoLC1UA6TjtG-22">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="QA5lD1XoMoLC1UA6TjtG-20" parent="1" style="rounded=1;whiteSpace=wrap;html=1;roundedPerimeter=1;fillColor=#d5e8d4;strokeColor=#82b366;" value="Request completes" vertex="1">
+                    <mxGeometry height="80" width="120" x="280" y="720" as="geometry"/>
+                </mxCell>
+                <mxCell id="QA5lD1XoMoLC1UA6TjtG-22" parent="1" style="rounded=1;whiteSpace=wrap;html=1;roundedPerimeter=1;fillColor=#d5e8d4;strokeColor=#82b366;" value="Logs show raw text for review" vertex="1">
+                    <mxGeometry height="80" width="120" x="280" y="840" as="geometry"/>
+                </mxCell>
+                <mxCell id="QA5lD1XoMoLC1UA6TjtG-26" parent="1" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" value="Key" vertex="1">
+                    <mxGeometry height="90" width="140" x="20" y="220" as="geometry"/>
+                </mxCell>
+                <mxCell id="QA5lD1XoMoLC1UA6TjtG-27" parent="QA5lD1XoMoLC1UA6TjtG-26" style="text;strokeColor=#b85450;fillColor=#f8cecc;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" value="Default/Vulnerable Flow" vertex="1">
+                    <mxGeometry height="30" width="140" y="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="QA5lD1XoMoLC1UA6TjtG-28" parent="QA5lD1XoMoLC1UA6TjtG-26" style="text;strokeColor=#82b366;fillColor=#d5e8d4;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" value="Patched/Intended Flow" vertex="1">
+                    <mxGeometry height="30" width="140" y="60" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

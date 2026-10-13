@@ -1,6 +1,6 @@
 # Java Deserialisation
 
-## CVE-2021-44228: Solar (Log4j)
+## CVE-2021-44228: Log4Shell Present in Apache Solr 8.11.0
 
 ### Vulnerability Overview
 
@@ -15,14 +15,19 @@ Linked CWEs: [^NIST2026Log4Shell][^CVEOrg2023Log4Shell]
 
 ### Vulnerability Explanation: Underlying Security Theory, Relevant Weaknesses and Classification
 
-#### Regarding Log4Shell Specifically
+<!-- #### Regarding Log4Shell Specifically -->
 
-CVE-2021-44228, colloqiually known as Log4Shell, is a vulnerability that allows attackers to achieve remote code execution by exploiting insecure deserialisation in the Apache Log4j 2 library, a widely used logging library in Java applications.
+CVE-2021-44228, colloqiually known as Log4Shell, is a vulnerability that allows attackers to achieve remote code execution by exploiting insecure deserialisation in the Apache Log4j 2 library, a widely used logging library in Java applications. By default, Log4J will evaluate parameters in logs, enabling the lookup of remote servers.
 
-JDNI features used by the library do not have features present to protect against threat actor controlled LDAP (or other JDNI) related endpoints, which enables RCE when an attacker is able to control log messages or log message parameters [^NIST2026Log4Shell].
+One of the key features of Log4j is the ability to interpret strings to enrich log messages, wrapped within `${prefix:query}` [^Hiesgen2024Log4Shell]. Whilst this could be used for legitimate purposes such as idenfying hostnames within logs, `Apache Log4j2 2.0-beta9` through `2.15.0` accepts a prefix that triggers a JNDI lookup, enabling an attacker to link to a controlled LDAP server. There is no validation against this implemented within `Solr 8.11.0`, nor is there validation against serialised objects recieved from external servers, which enables RCE from crafted serialised objects when an attacker is able to control log messages or log message parameters [^NIST2026Log4Shell].
 
-This enabled attackers to execute commands on targeted hosts, disrupting infrastructure and causing supply chain failiures. The vulnerability is specifically present in `Apache Log4j2 2.0-beta9` through `2.15.0`, which in turn affects a number of downstream apps, including `Apache Solr 8.11.0`, which was used for the assignment.
+Apache Solr is a search server that is designed for document retrieval and analytical applications on structured and unstructured datasets [^Deniz2023ApacheSolr]. The following flow diagram illustrates the deserialisation vulnerability as it would occur during runtime, as well as the intended (patched) flow of the program.
 
+The Log4Shell vulnerability was estimated to be present within 10% of all digital assets, enabling attackers to conduct a wide array of activities such as data exfiltration, ransomware installation and denial of service [^IBM2023Log4Shell][^Hiesgen2024Log4Shell].
+
+![Log4j interactions within Solr](SolrLog4JFlowDiagram.png)
+
+<!--
 #### Deserialisation in general
 
 Insecure deserialisation occurs when a web application trusts serialised data without taking steps to validate it's authenticity. In Java, object serialisation is facilitated through the `Serializable` interface, allowing objects to be converted into byte streams and vice versa for network communication and data persistence.
@@ -30,24 +35,29 @@ Insecure deserialisation occurs when a web application trusts serialised data wi
 Deserialisation errors can be identified by either analyzing the source code of a Java application for use of the `Serializable` module, or by performing black box testing using a tool such as Ysoserial.
 
 Object injection is a vulnerability that arises from insecure data deserialisation in web applications. It occurs when untrusted data is deserialised into an object, allowing attackers to manipulate the serialised data to execute arbitrary code, leading to serious security risks.
+-->
 
 ---
 
 ### Demonstration of Exploitability
 
+---
+
 ### Identifying the Vulnerability Using Techniques and Tools
 
-The presence of `Apache Solr 8.11.0` on a machine can be confirmed through the use of `nmap -v -p` on the target machine, which can be seen operating on port 8983 by default.
+The presence of `Apache Solr 8.11.0` on a machine can be confirmed through nmap port scanning `nmap -v -p` on the target machine, with the Admin UI being served on port 8983 by default [^Apache2021SolrAdminUI].
 
+<!--
 #### Ysoserial for Java
 
 Ysoserial is a widely recognised exploitation tool specifically crafted to test the security of Java applications against serialisation vulnerabilities. It helps generate payloads that exploit these vulnerabilities, making it an essential tool for attackers and penetration testers who aim to assess and exploit applications that use Java serialisation.
 
 To use Ysoserial, an attacker would typically generate a payload with a command such as `java -jar ysoserial.jar [payload type] '[command to execute]'`, where `[payload type]` is the type of exploit and `[command to execute]` is the arbitrary command they wish to run on the target system. For example, using the `CommonsCollections1` payload type might look like this: `java -jar ysoserial.jar CommonsCollections1 'calc.exe'`. This command generates a serialised object that will execute the specified command when deserialised by a vulnerable application. Ysoserial is available for download on GitHub.
+-->
 
 ### How to Mitigate the Vulnerability
 
-#### Fixing deserealisation at a generic level
+<!-- #### Fixing deserealisation at a generic level
 
 There are two main perspectives for mitigation of deserialisation issues: the pentesting side and the secure coder side. From the offensive side, people can do the following:
 
@@ -64,6 +74,8 @@ From the Security Engineer's perspective, the following can be done:
 - Follow secure development principles: Implement security best practices, including least privilege, defence in depth, and secure-by-default configurations.
 - Comply with secure coding standards: Adhere to established security guidelines and framework-specific coding standards throughout the development lifecycle.
 
+-->
+
 ### Retesting For Resilience
 
 ## Marking Scheme (For Reference)
@@ -77,3 +89,7 @@ From the Security Engineer's perspective, the following can be done:
 
 [^NIST2026Log4Shell]: <https://nvd.nist.gov/vuln/detail/cve-2021-44228>
 [^CVEOrg2023Log4Shell]: <https://www.cve.org/CVERecord?id=CVE-2021-44228>
+[^Deniz2023ApacheSolr]: <https://dergipark.org.tr/en/doi/10.17714/gumusfenbil.1213317>
+[^IBM2023Log4Shell]: <https://www.ibm.com/think/topics/log4shell>
+[^Hiesgen2024Log4Shell]: <https://ieeexplore.ieee.org/document/10628102>
+[^Apache2021SolrAdminUI]: <https://solr.apache.org/guide/8_11/overview-of-the-solr-admin-ui.html>
