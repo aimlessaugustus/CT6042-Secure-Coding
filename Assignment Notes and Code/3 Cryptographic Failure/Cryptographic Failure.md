@@ -34,6 +34,12 @@ When encrypting using AES, the message is required to be broken into blocks of 1
 
 The initial laboratory example encrypts any file with AES-256-ECB using a random key, stores the `.enc` and `.key` files in `ecb_output/`, and decrypts them again.
 
+To run the example, the following command was run in terminal:
+
+```bash
+python3 Assignment\ Notes\ and\ Code/3\ Cryptographic\ Failure/CVE-2022-28382.py encrypt Assignment\ Notes\ and\ Code/3\ Cryptographic\ Failure/test.bmp
+```
+
 ### Identifying the Vulnerability Using Techniques and Tools
 
 ### How to Mitigate the Vulnerability
