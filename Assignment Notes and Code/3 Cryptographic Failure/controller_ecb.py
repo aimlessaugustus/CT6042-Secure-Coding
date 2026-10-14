@@ -16,8 +16,8 @@ chaining, so identical plaintext blocks always give identical ciphertext
 blocks.
 
 Usage:
-    python CVE-2022-28382.py encrypt <input_file> [--out DIR]
-    python CVE-2022-28382.py decrypt <file.enc> --key <file.key> [--out DIR]
+    python controller_ecb.py encrypt <input_file> [--out DIR]
+    python controller_ecb.py decrypt <file.enc> --key <file.key> [--out DIR]
 
 Requires: pip install cryptography
 """

@@ -37,10 +37,33 @@ The initial laboratory example encrypts any file with AES-256-ECB using a random
 To run the example, the following command was run in terminal:
 
 ```bash
-python3 Assignment\ Notes\ and\ Code/3\ Cryptographic\ Failure/CVE-2022-28382.py encrypt Assignment\ Notes\ and\ Code/3\ Cryptographic\ Failure/test.bmp
+python3 Assignment\ Notes\ and\ Code/3\ Cryptographic\ Failure/controller_ecb.py encrypt Assignment\ Notes\ and\ Code/3\ Cryptographic\ Failure/test.bmp
 ```
 
+![Encryption Command](encryption_command.png)
+
+This produced `test.bmp.enc` by encrypting the image `test.bmp`, as well as the secret key file `test.bmp.key`.
+
+![Image prior to encryption](test.bmp)
+*Sample Image Prior to Encryption.*
+
 ### Identifying the Vulnerability Using Techniques and Tools
+
+When the encryption program is run, the raw `.enc` file can be viewed as raw data. Whilst the meaning of the bytes is obfuscated, large patterns of common bytes can be viewed, particularly within line 5 of the file.
+
+![Repeated Bytes in File](repeated_bytes_in_file.png)
+*Repeated bytes visible within Line 5 of the encrypted image.*
+
+Furthermore, when running the `ecb_view.py` script, an approximation of the image is produced without the secret key, by replacing the encrypted header with a plaintext header that specifies an attacker guessed image width.
+
+![Command to Reveal](encryption_attack_command.png)
+
+```bash
+python3 ecb_view.py test.bmp.enc
+```
+
+![ECB Image Reconstructed](../../ecb_output/ecb_exposed.bmp)
+*Image Reconstructed from Attacking Script*
 
 ### How to Mitigate the Vulnerability
 
