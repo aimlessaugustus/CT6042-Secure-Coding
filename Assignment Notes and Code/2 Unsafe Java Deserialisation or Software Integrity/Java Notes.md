@@ -27,16 +27,6 @@ The Log4Shell vulnerability was estimated to be present within 10% of all digita
 
 ![Log4j interactions within Solr](SolrLog4JFlowDiagram.png)
 
-<!--
-#### Deserialisation in general
-
-Insecure deserialisation occurs when a web application trusts serialised data without taking steps to validate it's authenticity. In Java, object serialisation is facilitated through the `Serializable` interface, allowing objects to be converted into byte streams and vice versa for network communication and data persistence.
-
-Deserialisation errors can be identified by either analyzing the source code of a Java application for use of the `Serializable` module, or by performing black box testing using a tool such as Ysoserial.
-
-Object injection is a vulnerability that arises from insecure data deserialisation in web applications. It occurs when untrusted data is deserialised into an object, allowing attackers to manipulate the serialised data to execute arbitrary code, leading to serious security risks.
--->
-
 ---
 
 ### Demonstration of Exploitability
@@ -72,25 +62,6 @@ java -jar JNDI-Injection-Exploit-1.0-SNAPSHOT-all.jar -L 10.10.14.10:1389 -P /tm
 
 ### How to Mitigate the Vulnerability
 
-<!-- #### Fixing deserealisation at a generic level
-
-There are two main perspectives for mitigation of deserialisation issues: the pentesting side and the secure coder side. From the offensive side, people can do the following:
-
-- Codebase Analysis: Review the application’s serialization methods in detail. Identify potential points of serialization and deserialization within the codebase.
-- Vulnerability Identification: Use static analysis tools to detect insecure deserialization issues. Inspect for outdated dependencies, unsafe libraries, and insufficient input validation.
-- Fuzzing and Dynamic Analysis: Apply fuzzing techniques to generate unexpected or faulty input data. Utilize dynamic analysis tools to monitor application behavior during runtime.
-- Error Handling Evaluation: Assess the application’s response to deserialization errors. Look for stack traces or error messages that may reveal system information.
-
-From the Security Engineer's perspective, the following can be done:
-
-- Use secure serialisation methods: Avoid insecure serialisation mechanisms and adopt safer formats such as JSON or XML with appropriate validation controls.
-- Restrict dynamic code execution: Do not use functions such as eval() or exec(), as they can enable arbitrary code execution.
-- Validate and sanitise data: Enforce strict input validation and apply appropriate sanitisation and encoding techniques to all data before processing.
-- Follow secure development principles: Implement security best practices, including least privilege, defence in depth, and secure-by-default configurations.
-- Comply with secure coding standards: Adhere to established security guidelines and framework-specific coding standards throughout the development lifecycle.
-
--->
-
  Due to CVE-2021-44228 being discovered after `Solr 8.11.0` had been published, mitigation and remediation would take place during the Maintenance and Operations phase of the Software Development Lifecycle. For complete remediation against Log4Shell, the developers at Apache would need to update Log4j to version `2.17.1` or later, which limits `JNDILookup` class to localhosts, but is still vulnerable to denial of service attacks and buffer overflows due to a lack of recursion [^Doll2025Log4Shell][^IBM2023Log4Shell].
 
  Where patching isn't an option, alternative fixes are available that also fit within the scope of Maintenance and Operations, though these come with their own drawbacks. Messaging lookups can be disabled using the changing the `Log4j2.formatMsgNoLookups` system property to `True`, which prevents attackers from using lookup substitutions to conduct activities. However, this does not prevent other JNDI lookup vulnerabilities, such as CVE-2021-45046 in non-default configurations, still leaving residual risk [^Doll2025Log4Shell]. Another fix is to remove the `JNDILookup` class entirely, which is more secure than disabling lookups, but can cause a loss of function in apps that rely on the class as part of their core functionality.
@@ -98,13 +69,6 @@ From the Security Engineer's perspective, the following can be done:
  For future app development, developers should be aware of Log4Shell and factor in both the use of the exploit for RCE and vulnerable versions when threat modelling during the Requirements Definition phase of the software development lifecycle.
 
 ### Retesting For Resilience
-
-## Marking Scheme (For Reference)
-
-| **Mark Range (%)** | **Knowledge & Understanding** | **Analysis** | **Reading & Research** | **Writing / Presentation Style** |
-| --- | --- | --- | --- | --- |
-| **80+** | Extraordinary and authoritative understanding of the five selected software errors, including root causes, exploit mechanisms, secure mitigations, verification, the Security Development Life Cycle and product risk. | Exceptional critical analysis of vulnerable and mitigated code. Exploitation, appropriate tool‑assisted testing and retesting are interpreted rigorously; security decisions, limitations and residual risks are evaluated convincingly. | Extensive, independent and critical research. Authoritative standards and high‑quality academic or technical sources are integrated throughout to substantiate technical claims, mitigations, lifecycle discussion and risk analysis. | Lively, precise and professional report with exceptional control of argument. Code, screenshots and tool results are clearly captioned, referenced and explained; appendices are complete; virtually error‑free. |
-| **70–79** | Excellent and wide‑ranging understanding of the five software errors, their causes, exploitation, mitigation and retesting, with confident understanding of secure development lifecycle and risk principles. | Excellent and consistent analysis of practical evidence. Vulnerable and mitigated code, exploits, security‑tool findings and retests are interpreted critically, with well‑justified controls and thoughtful consideration of limitations and residual risk. | Excellent independent research using a wide range of relevant academic and authoritative technical sources. Evidence is selected critically, integrated effectively and used consistently to support claims. | Excellent, coherent and professional presentation with strong control of argument. Figures, code and test evidence are consistently captioned, referenced and discussed; source‑code appendices are complete; very few errors. |
 
 ## References
 
