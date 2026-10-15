@@ -102,11 +102,13 @@ python3 ecb_view.py test.bmp.enc --width 512
 
 These limitations emphasise the need to use multiple tools such as exploit-based verification and byte analysis during software testing, as these can reveal patterns such as low entropy zones which create outlines in encrypted image files that SAST tooling could miss. Likewise, SAST tooling can capture a wider range of errors than a specific exploit script.
 
+The `repeat_counter.py` script was also used to perform ciphertext block analysis on encrypted images.
+
 ![Bandit Detecting ECB Vulnerability](banditecbdetection.png)
 *Figure: Bandit successfuly detecting CWE-327 within the code*
 
 ![Repeated Bytes in File](repeated_bytes_in_file.png)
-*Figure: Repeated bytes visible within Line 5 of the encrypted image.*
+*Figure: Repeated Bytes within the ECB Encrypted Image. 31,586 blocks were repeated in total.*
 
 ### How to Mitigate the Vulnerability
 
@@ -183,6 +185,8 @@ def decrypt(data: bytes, key: bytes) -> bytes:
 ### Retesting For Resilience
 
 Both proposed solutions underwent the same testing as the initial ECB code. In both cases, Bandit no longer detected the presence of CWE-327, and the produced images lacked low entropy zones that produced recognisable outlines when `ecb_view.py` was run. Whilst appearing successful, these tests revealed a limitation of Bandit, as it did not detect CBC's lack of integrity protection, despite CBC being considered insecure by OWASP [^OWASP2025AO4]. This emphasises the importance of fully analysing the limitations of potential algorithms during the Planning and Requirements phase of the SDLC, as well as cross-testing to capture additional errors.
+
+Finally, ciphertext block frequency analysis confirmed zero repeated bytes in both the CBC and GCM solutions.
 
 ![CBCAttemptedReconstruction](../../cbc_output/cbc_reconstruction.bmp)
 *Figure: Failed Image Reconstruction Attempt When Using CBC.*
