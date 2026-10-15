@@ -9,11 +9,13 @@ Linked CWEs: [^NIST2026AESCB][^Dreeg2022AESECB]
 - CWE-327: Use of a Broken or Risky Cryptographic Algorithm
 - CWE-1240: Use of a Cryptographic Primitive with a Risky Implementation
 
+OWASP
+
 ### Vulnerability Explanation: Underlying Security Theory, Relevant Weaknesses and Classification
 
-This laboratory example is designed to emulate a weakness found within Verbatim Keypad Secure drives discovered in 2022. The INIC-3637EN chip firmware within the drives was coded to use AES-256-ECB for encryption. When encrypting with AES, a message or file is required to be broken down into 16 byte blocks, with cipher modes such as ECB combining blocks together to produce a complete encrypted file.
+This laboratory example is designed to emulate a weakness found within Verbatim Keypad Secure drives discovered in 2022. The INIC-3637EN chip firmware within the drives was coded to use AES-256-ECB for encryption. When encrypting with AES, a message or file is required to be broken down into 16 byte blocks, with cipher modes such as ECB defining how blocks relate.
 
-ECB encrypts each block independently, which allows for faster encryption than other codebooks, but provides insufficent diffusion for structured files such as images that have large numbers of repeating bytes [^Dworkin2001NISTECBCBC][^Riatma2025AESModes]. This enables the disclosure of information by a threat actor through the appending of individual blocks together with an arbitary image header.
+ECB encrypts each block independently, which allows for faster encryption than other modes, but results in deterministic block encryption, which is detrimental to structured files such as images that have large numbers of repeating bytes [^Dworkin2001NISTECBCBC][^Riatma2025AESModes]. This enables the disclosure of information by a threat actor through the prepending of individual blocks together with an arbitary image header.
 
 ### Demonstration of Exploitability
 
@@ -57,7 +59,7 @@ This produced `test.bmp.enc` by encrypting the image `test.bmp`, as well as the 
 
 ### Identifying the Vulnerability Using Techniques and Tools
 
- Whilst reputable tools such as Padbuster can be used to demonstrate and verify padding attacks against AES codebooks, no such tooling exists for image reconstruction. This means that vulnerability identification must be done using a combination of a custom python script for image reconstruction and manual file inspection to demonstrate and test the vulnerability during DAST, aligning to existing research methods [^Boussif2025AES][^Wattar2020AESImages]. Whilst this allows for the verfication of results with experimental data, it is also limited by a reliance on the accuracy of the python script.
+ This means that vulnerability identification must be done using a combination of a custom python script for image reconstruction and manual file inspection to demonstrate and test the vulnerability during black-box ciphertext analysis, aligning to existing research methods [^Boussif2025AES][^Wattar2020AESImages]. Whilst this allows for the verfication of results with experimental data, it is also limited by a reliance on the accuracy of the python script.
 
 When the encryption program is run, the raw `.enc` file can be viewed as raw data. Whilst the meaning of the bytes is obfuscated, large patterns of common bytes can be viewed, particularly within line 5 of the file.
 
@@ -104,7 +106,7 @@ python3 ecb_view.py test.bmp.enc
 
 ### How to Mitigate the Vulnerability
 
-Mitigation of the vulnerability would occur during the Requirements and Analysis phase of the SSDLC, when developers define appropriate encryption methods for their application use case. Developing firmware for constrained devices like the INIC-3637EN poses an additional challenge of balancing a cryptographically secure cipher mode with limited available processing power, which had to be considered when proposing mitigations. The first mitigation is to use AES-256-CBC, which uses an Initialisation Vector to chain blocks and eliminate the repeated byte patterns at the cost of processing power [^Dworkin2001NISTECBCBC][^Munir2024ImageEncryption]. However, both ECB and CBC are vulnerable to padding attacks, leaving residual risk[^Boussif2025AES]. The second mitigation option is to use AES-256-GCM, which has the same benefits of CBC with added resistance to padding oracle attacks and authentication methods to identify tampering [^Dworkin2007NISTGCM]. Whilst more processing power is consumed than the other two methods, AES-256-GCM has still be identified as suitable for constrained device development [^Riatma2025AESModes]. Both address the lack of diffusion within EBC.
+Mitigation of the vulnerability would occur during the Requirements and Analysis phase of the SSDLC, when developers define appropriate encryption methods for their application use case. Developing firmware for constrained devices like the INIC-3637EN poses an additional challenge of balancing a cryptographically secure cipher mode with limited available processing power, which had to be considered when proposing mitigations. The first mitigation is to use AES-256-CBC, which uses an Initialisation Vector to chain blocks and eliminate the repeated byte patterns at the cost of processing power [^Dworkin2001NISTECBCBC][^Munir2024ImageEncryption]. Whilst ECB and CBC are vulnerable to padding attacks, this particular risk is reduced, as drives have no oracle to report padding[^Boussif2025AES]. The second mitigation option is to use AES-256-GCM, which has the same benefits of CBC with added resistance to padding oracle attacks and authentication methods to identify tampering [^Dworkin2007NISTGCM]. Whilst more processing power is consumed than the other two methods, AES-256-GCM has still be identified as suitable for constrained device development [^Riatma2025AESModes]. Both address the lack of diffusion within EBC.
 
 *Listing: Updated Code with CBC Encryption for Chaining*
 
