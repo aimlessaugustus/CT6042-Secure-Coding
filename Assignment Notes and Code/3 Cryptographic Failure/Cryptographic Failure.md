@@ -36,7 +36,7 @@ This produced `test.bmp.enc` by encrypting the image `test.bmp`, as well as the 
 
 ### Identifying the Vulnerability Using Techniques and Tools
 
- Whilst reputable tools such as Padbuster can be used to demonstrate and verify padding attacks against AES codebooks, no such tooling exists for image reconstruction. This means that vulnerability identification must be done using a combination of a custom python script for image reconstruction and manual file inspection to demonstrate and test the vulnerability for DAST, aligning to existing research methods [^Boussif2025AES][^Wattar2020AESImages]. Whilst this allows for the verfication of results with experimental data, it is also limited by a reliance on the accuracy of the python script.
+ Whilst reputable tools such as Padbuster can be used to demonstrate and verify padding attacks against AES codebooks, no such tooling exists for image reconstruction. This means that vulnerability identification must be done using a combination of a custom python script for image reconstruction and manual file inspection to demonstrate and test the vulnerability during DAST, aligning to existing research methods [^Boussif2025AES][^Wattar2020AESImages]. Whilst this allows for the verfication of results with experimental data, it is also limited by a reliance on the accuracy of the python script.
 
 When the encryption program is run, the raw `.enc` file can be viewed as raw data. Whilst the meaning of the bytes is obfuscated, large patterns of common bytes can be viewed, particularly within line 5 of the file.
 
