@@ -24,7 +24,7 @@ Linked CWEs: [^NIST2026AESCB][^Dreeg2022AESECB]
 
 This laboratory example is designed to emulate a weakness found within Verbatim Keypad Secure drives discovered in 2022. The INIC-3637EN chip firmware within the drives was coded to use AES-256-ECB for encryption. When encrypting with AES, a message or file is required to be broken down into 16 byte blocks, with cipher modes such as ECB chaining blocks together to produce a complete encrypted file.
 
-ECB encrypts each block independently without
+ECB encrypts each block independently
 
 <!--
 When encrypting using AES, the message is required to be broken into blocks of 16 bytes. [When there is insufficient data to completely fill a block, such as during the final round, padding is added to meet this requirement.] To chain these individual blocks together, cipher modes such as electronic codebook ECB are employed. ECB functions by encrypting each block independently, which provides insufficient diffusion to properly obfuscate larger datasets and images. Using ECB in these instances results in a large number of repeatable
@@ -45,25 +45,52 @@ python3 Assignment\ Notes\ and\ Code/3\ Cryptographic\ Failure/controller_ecb.py
 This produced `test.bmp.enc` by encrypting the image `test.bmp`, as well as the secret key file `test.bmp.key`.
 
 ![Image prior to encryption](test.bmp)
-*Sample Image Prior to Encryption.*
+*Figure: Sample Image Prior to Encryption.*
 
 ### Identifying the Vulnerability Using Techniques and Tools
 
 When the encryption program is run, the raw `.enc` file can be viewed as raw data. Whilst the meaning of the bytes is obfuscated, large patterns of common bytes can be viewed, particularly within line 5 of the file.
 
 ![Repeated Bytes in File](repeated_bytes_in_file.png)
-*Repeated bytes visible within Line 5 of the encrypted image.*
+*Figure: Repeated bytes visible within Line 5 of the encrypted image.*
 
-Furthermore, when running the `ecb_view.py` script, an approximation of the image is produced without the secret key, by replacing the encrypted header with a plaintext header that specifies an attacker guessed image width.
+The `ecb_view.py` script demonstrates how an attacker can maniupulate this weakness by prepending a plaintext header with a guessed image width, enabling the disclosure of information through the reconstruction of the image.
+
+*Listing: Function to Append Header*
+
+```python
+def build_bmp_header(width: int, height: int) -> bytes:
+    """
+    Builds a standard 54-byte header for an uncompressed 24-bit BMP.
+
+    Args:
+        width (int): The image width in pixels.
+        height (int): The image height in pixels.
+
+    Returns:
+        bytes: The BMP file header and info header.
+    """
+    row_size = (width * BYTES_PER_PIXEL +
+                3) & ~3       # rows padded to 4 bytes
+    pixel_bytes = row_size * height
+    file_header = struct.pack(
+        "<2sIHHI", b"BM", HEADER_SIZE + pixel_bytes, 0, 0, HEADER_SIZE)
+    info_header = struct.pack("<IiiHHIIiiII", 40, width, height, 1, 24, 0,
+                              pixel_bytes, 2835, 2835, 0, 0)
+    return file_header + info_header
+```
 
 ![Command to Reveal](encryption_attack_command.png)
+*Figure: Attack being successfully executed.*
+
+*Listing: Command Usage to Execute Attack*
 
 ```bash
 python3 ecb_view.py test.bmp.enc
 ```
 
 ![ECB Image Reconstructed](../../ecb_output/ecb_exposed.bmp)
-*Image Reconstructed from Attacking Script*
+*Figure: Image Reconstructed from Attacking Script*
 
 ### How to Mitigate the Vulnerability
 
