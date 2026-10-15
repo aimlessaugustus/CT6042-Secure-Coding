@@ -24,7 +24,7 @@ Linked CWEs: [^NIST2026AESCB][^Dreeg2022AESECB]
 
 This laboratory example is designed to emulate a weakness found within Verbatim Keypad Secure drives discovered in 2022. The INIC-3637EN chip firmware within the drives was coded to use AES-256-ECB for encryption. When encrypting with AES, a message or file is required to be broken down into 16 byte blocks, with cipher modes such as ECB chaining blocks together to produce a complete encrypted file.
 
-ECB encrypts each block independently
+ECB encrypts each block independently, which allows for faster encryption than other codebooks, but provides insufficent diffusion for structured files such as images that have large numbers of repeating bytes [^Riatma2025AESModes]. This enables the disclosure of information by a threat actor through the appending of individual blocks together with an arbitary image header.
 
 <!--
 When encrypting using AES, the message is required to be broken into blocks of 16 bytes. [When there is insufficient data to completely fill a block, such as during the final round, padding is added to meet this requirement.] To chain these individual blocks together, cipher modes such as electronic codebook ECB are employed. ECB functions by encrypting each block independently, which provides insufficient diffusion to properly obfuscate larger datasets and images. Using ECB in these instances results in a large number of repeatable
@@ -32,12 +32,14 @@ When encrypting using AES, the message is required to be broken into blocks of 1
 
 ### Demonstration of Exploitability
 
-The initial laboratory example encrypts any file with AES-256-ECB using a random key, stores the `.enc` and `.key` files in `ecb_output/`, and decrypts them again.
+The initial laboratory example encrypts any file with AES-256-ECB using a random key, stores the `.enc` and `.key` files in `ecb_output/`, and decrypts them again. This is handled by the python Cryptography library, and with the program flow being shown below.
 
 To run the example, the following command was run in terminal:
 
+*Listing: Bash Command to Encrypt an Image*
+
 ```bash
-python3 Assignment\ Notes\ and\ Code/3\ Cryptographic\ Failure/controller_ecb.py encrypt Assignment\ Notes\ and\ Code/3\ Cryptographic\ Failure/test.bmp
+python3 controller_ecb.py encrypt test.bmp
 ```
 
 ![Encryption Command](encryption_command.png)
@@ -49,14 +51,16 @@ This produced `test.bmp.enc` by encrypting the image `test.bmp`, as well as the 
 
 ### Identifying the Vulnerability Using Techniques and Tools
 
+ Whilst reputable tools such as Padbuster can be used to demonstrate and verify padding attacks against AES codebooks, no such tooling exists for image reconstruction. This means that vulnerability identification must be done using a combination of a custom python script for image reconstruction and manual file inspection to demonstrate and test the vulnerability for DAST, aligning to existing research methods [^Boussif2025AES][^Wattar2020AESImages]. Whilst this allows for the verfication of results with experimental data, it is also limited by a reliance on the accuracy of the python script.
+
 When the encryption program is run, the raw `.enc` file can be viewed as raw data. Whilst the meaning of the bytes is obfuscated, large patterns of common bytes can be viewed, particularly within line 5 of the file.
 
 ![Repeated Bytes in File](repeated_bytes_in_file.png)
 *Figure: Repeated bytes visible within Line 5 of the encrypted image.*
 
-The `ecb_view.py` script demonstrates how an attacker can maniupulate this weakness by prepending a plaintext header with a guessed image width, enabling the disclosure of information through the reconstruction of the image.
+The `ecb_view.py` script demonstrates how an attacker can manipulate this weakness by prepending a plaintext header with a guessed image width, enabling the disclosure of information through the reconstruction of the image. The outcome can be seen in the figure below, confirming the presence of the ECB vulnerability within the code.
 
-*Listing: Function to Append Header*
+*Listing: Function to Append Header in ecb_view.py*
 
 ```python
 def build_bmp_header(width: int, height: int) -> bytes:
@@ -71,7 +75,7 @@ def build_bmp_header(width: int, height: int) -> bytes:
         bytes: The BMP file header and info header.
     """
     row_size = (width * BYTES_PER_PIXEL +
-                3) & ~3       # rows padded to 4 bytes
+                1) & ~3       # rows padded to 4 bytes
     pixel_bytes = row_size * height
     file_header = struct.pack(
         "<2sIHHI", b"BM", HEADER_SIZE + pixel_bytes, 0, 0, HEADER_SIZE)
@@ -94,9 +98,14 @@ python3 ecb_view.py test.bmp.enc
 
 ### How to Mitigate the Vulnerability
 
+Mitigation of the vulnerability would occur during the Requirements and Analysis phase of the SSDLC, when developers define appropriate encryption methods for their application use case. Developing firmware for constrained devices like the INIC-3637EN poses an additional challenge of balancing a cryptographically secure cipher mode with limited available processing power, which had to be considered when proposing mitigations. The first mitigation is to use AES-256-CBC, which uses an Initialisation Vector to chain blocks and eliminate the repeated byte patterns at the cost of processing power [^Boussif2025AES]. However, both ECB and CBC are vulnerable to padding attacks, leaving residual risk. The second mitigation option is to use AES-256-GCM, which has the same benefits of CBC with added resistance to padding oracle attacks. Whilst more processing power is consumed than the other two methods, AES-256-GCM has still be identified as suitable for constrained device development. Both provide higher diffusion than EBC.
+
 ### Retesting For Resilience
 
 ## References
 
 [^NIST2026AESCB]: <https://nvd.nist.gov/vuln/detail/cve-2022-28382>
 [^Dreeg2022AESECB]: <https://packetstorm.news/files/id/167491>
+[^Riatma2025AESModes]: <https://jurnal.polinema.ac.id/index.php/jartel/article/view/7323>
+[^Boussif2025AES]: <https://ieeexplore.ieee.org/document/9826324>
+[^Wattar2020AESImages]: <https://turcomat.org/index.php/turkbilmat/article/view/14117>
