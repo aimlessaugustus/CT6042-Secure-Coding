@@ -102,6 +102,11 @@ Mitigation of the vulnerability would occur during the Requirements and Analysis
 
 ### Retesting For Resilience
 
+The code was then retested using both mitigation methods, with both outputs being unidentifiable by the image reconstruction attack. Static analysis of the files also confirmed a lack of repeated bytes. One major limitation of both the testing and retesting methods is the requirement for human inspection, limiting automation without LLM usage. However, this is rooted in the nature of the vulnerability, which requires a threat actor to inspect an image for meaningful information.
+
+![CBCAttemptedReconstruction](../../cbc_output/cbc_reconstruction.bmp)
+*Failed Image Reconstruction Attempt When Using CBC.*
+
 ## References
 
 [^NIST2026AESCB]: <https://nvd.nist.gov/vuln/detail/cve-2022-28382>
