@@ -98,7 +98,7 @@ python3 ecb_view.py test.bmp.enc
 
 ### How to Mitigate the Vulnerability
 
-Mitigation of the vulnerability would occur during the Requirements and Analysis phase of the SSDLC, when developers define appropriate encryption methods for their application use case. Developing firmware for constrained devices like the INIC-3637EN poses an additional challenge of balancing a cryptographically secure cipher mode with limited available processing power, which had to be considered when proposing mitigations. The first mitigation is to use AES-256-CBC, which uses an Initialisation Vector to chain blocks and eliminate the repeated byte patterns at the cost of processing power [^Boussif2025AES]. However, both ECB and CBC are vulnerable to padding attacks, leaving residual risk. The second mitigation option is to use AES-256-GCM, which has the same benefits of CBC with added resistance to padding oracle attacks. Whilst more processing power is consumed than the other two methods, AES-256-GCM has still be identified as suitable for constrained device development. Both provide higher diffusion than EBC.
+Mitigation of the vulnerability would occur during the Requirements and Analysis phase of the SSDLC, when developers define appropriate encryption methods for their application use case. Developing firmware for constrained devices like the INIC-3637EN poses an additional challenge of balancing a cryptographically secure cipher mode with limited available processing power, which had to be considered when proposing mitigations. The first mitigation is to use AES-256-CBC, which uses an Initialisation Vector to chain blocks and eliminate the repeated byte patterns at the cost of processing power [^Munir2024ImageEncryption]. However, both ECB and CBC are vulnerable to padding attacks, leaving residual risk[^Boussif2025AES]. The second mitigation option is to use AES-256-GCM, which has the same benefits of CBC with added resistance to padding oracle attacks. Whilst more processing power is consumed than the other two methods, AES-256-GCM has still be identified as suitable for constrained device development [^Riatma2025AESModes]. Both provide higher diffusion than EBC.
 
 ### Retesting For Resilience
 
@@ -109,3 +109,4 @@ Mitigation of the vulnerability would occur during the Requirements and Analysis
 [^Riatma2025AESModes]: <https://jurnal.polinema.ac.id/index.php/jartel/article/view/7323>
 [^Boussif2025AES]: <https://ieeexplore.ieee.org/document/9826324>
 [^Wattar2020AESImages]: <https://turcomat.org/index.php/turkbilmat/article/view/14117>
+[^Munir2024ImageEncryption]: <https://www.mdpi.com/2624-800X/4/1/7>

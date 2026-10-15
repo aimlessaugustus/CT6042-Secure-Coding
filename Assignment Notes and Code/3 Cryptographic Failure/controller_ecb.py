@@ -1,8 +1,8 @@
 """
-CVE-2022-28382: AES-256-ECB in Verbatim "secure" drives
+CVE-2022-28382: AES-256-ECB in Verbatim drives
 
 Controlled laboratory example modelled on CVE-2022-28382, where the
-INIC-3637EN USB-to-SATA bridge firmware in certain Verbatim "secure" drives
+INIC-3637EN USB-to-SATA bridge firmware in certain Verbatim drives
 encrypts stored data with AES-256 in ECB mode.
 
 This program does the same thing in software:
