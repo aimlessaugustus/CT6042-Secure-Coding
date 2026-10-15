@@ -21,6 +21,8 @@ ECB encrypts each block independently, which allows for faster encryption than o
 
 The initial laboratory example encrypts any file with AES-256-ECB using a random key, stores the `.enc` and `.key` files in `ecb_output/`, and decrypts them again. This is handled by the python Cryptography library, and with the program flow being shown below.
 
+ The exploit-based verification was conducted using `ecb_view.py`, a custom python script that mirrors the techniques used in lab investigations into AES and the techniques an attacker would use by prepending a plaintext header to the encrypted file with a guessed image width [^Boussif2025AES][^Wattar2020AESImages].
+
 *Listing: ECB mode being used within the Python encryption file.*
 
 ```python
@@ -58,21 +60,6 @@ This produced `test.bmp.enc` by encrypting the image `test.bmp`, as well as the 
 ![Image prior to encryption](test.bmp)
 *Figure: Sample Image Prior to Encryption.*
 
-### Identifying the Vulnerability Using Techniques and Tools
-
- To identify the vulnerability, a combination of SAST tooling and exploit-based verification was used.
-
- <!--
- This means that vulnerability identification must be done using a combination of a custom python script for image reconstruction and manual file inspection to demonstrate and test the vulnerability during black-box ciphertext analysis, aligning to existing research methods [^Boussif2025AES][^Wattar2020AESImages]. Whilst this allows for the verfication of results with experimental data, it is also limited by a reliance on the accuracy of the python script.
-
-When the encryption program is run, the raw `.enc` file can be viewed as raw data. Whilst the meaning of the bytes is obfuscated, large patterns of common bytes can be viewed, particularly within line 5 of the file.
--->
-
-![Repeated Bytes in File](repeated_bytes_in_file.png)
-*Figure: Repeated bytes visible within Line 5 of the encrypted image.*
-
-The `ecb_view.py` script demonstrates how an attacker can manipulate this weakness by prepending a plaintext header with a guessed image width, enabling the disclosure of information through the reconstruction of the image. The outcome can be seen in the figure below, confirming the presence of the ECB vulnerability within the code.
-
 *Listing: Function to Append Header in ecb_view.py*
 
 ```python
@@ -109,9 +96,23 @@ python3 ecb_view.py test.bmp.enc --width 512
 ![ECB Image Reconstructed](../../ecb_output/ecb_exposed.bmp)
 *Figure: Image Reconstructed from Attacking Script*
 
+### Identifying the Vulnerability Using Techniques and Tools
+
+ To identify the vulnerability, a combination of SAST tooling and exploit-based verification was used. Bandit, the most widely adopted Python SAST tool, was able to successfully detect CWE-327 within the code, specifically attributing the use of ECB within the generated report [^Ruslan2026StaticAnalysis]. Whilst this worked for the lab example, Bandit as a tool is limited to Python, meaning that it would be unsuitable if the driver firmware is written in another language. Furthermore, Bandit's detection rule was based on the use of the `crypography` module's `ECB` mode and failed to detect logic-based errors within the code, such as the key and encrypted objects being stored in the same directory, meaning that it could struggle to identify a manual logic-based implementation of the ECB cipher mode.
+
+These limitations emphasise the need to use multiple tools such as exploit-based verification and byte analysis during software testing, as these can reveal patterns such as low entropy zones which create outlines in encrypted image files that SAST tooling could miss. Likewise, SAST tooling can capture a wider range of errors than a specific exploit script.
+
+![Bandit Detecting ECB Vulnerability](banditecbdetection.png)
+*Figure: Bandit successfuly detecting CWE-327 within the code*
+
+![Repeated Bytes in File](repeated_bytes_in_file.png)
+*Figure: Repeated bytes visible within Line 5 of the encrypted image.*
+
 ### How to Mitigate the Vulnerability
 
-Mitigation of the vulnerability would occur during the Requirements and Analysis phase of the SSDLC, when developers define appropriate encryption methods for their application use case. Developing firmware for constrained devices like the INIC-3637EN poses an additional challenge of balancing a cryptographically secure cipher mode with limited available processing power, which had to be considered when proposing mitigations. The first mitigation is to use AES-256-CBC, which uses an Initialisation Vector to chain blocks and eliminate the repeated byte patterns at the cost of processing power [^Dworkin2001NISTECBCBC][^Munir2024ImageEncryption]. Whilst ECB and CBC are vulnerable to padding attacks, this particular risk is reduced, as drives have no oracle to report padding[^Boussif2025AES]. The second mitigation option is to use AES-256-GCM, includes authentication methods to identify tampering [^Dworkin2007NISTGCM]. Whilst more processing power is consumed than the other two methods, AES-256-GCM has still be identified as suitable for constrained device development [^Riatma2025AESModes].
+Mitigation of the vulnerability would occur during the Requirements and Analysis phase of the SSDLC, when developers define appropriate encryption methods for their application use case. Developing firmware for constrained devices like the INIC-3637EN poses an additional challenge of balancing a cryptographically secure cipher mode with limited available processing power, which had to be considered when proposing mitigations.
+
+The first mitigation is to use AES-256-CBC, which uses an Initialisation Vector to chain blocks and eliminate the repeated byte patterns at the cost of processing power [^Dworkin2001NISTECBCBC][^Munir2024ImageEncryption]. Whilst CBC is vulnerable to padding attacks, the impact of this risk is reduced within the system context, as drives have no oracle to report padding[^Boussif2025AES]. The second mitigation option is to use AES-256-GCM, includes authentication methods to identify tampering [^Dworkin2007NISTGCM]. Whilst more processing power is consumed than the other two methods, AES-256-GCM has still be identified as suitable for constrained device development [^Riatma2025AESModes].
 
 *Listing: Updated Code with CBC Encryption for Chaining*
 
@@ -156,15 +157,44 @@ def encrypt(data: bytes, key: bytes) -> bytes:
     return nonce + ciphertext + encryptor.tag
 ```
 
+*Listing: AES-256-GCM decryption, with the ability to raise an error if tampering is detected.*
+
+```python
+def decrypt(data: bytes, key: bytes) -> bytes:
+    """
+    Decrypts data with AES-256-GCM, verifying the authentication tag.
+
+    Args:
+        data (bytes): The nonce, followed by the encrypted data and authentication tag.
+        key (bytes): The decryption key.
+
+    Returns:
+        bytes: The decrypted data.
+
+    Raises:
+        InvalidTag: If the data has been modified or the key is wrong.
+    """
+    nonce, ciphertext, tag = data[:NONCE_LEN], data[NONCE_LEN:-
+                                                    TAG_LEN], data[-TAG_LEN:]
+    decryptor = Cipher(algorithms.AES(key), modes.GCM(nonce, tag)).decryptor()
+    return decryptor.update(ciphertext) + decryptor.finalize()
+```
+
 ### Retesting For Resilience
 
-The code was then retested using both mitigation methods, with both outputs being unidentifiable by the image reconstruction attack. Static analysis of the files also confirmed a lack of repeated bytes. One major limitation of both the testing and retesting methods is the requirement for human inspection, limiting automation without LLM usage. However, this is rooted in the nature of the vulnerability, which requires a threat actor to inspect an image for meaningful information.
+Both proposed solutions underwent the same testing as the initial ECB code. In both cases, Bandit no longer detected the presence of CWE-327, and the produced images lacked low entropy zones that produced recognisable outlines when `ecb_view.py` was run. Whilst appearing successful, these tests revealed a limitation of Bandit, as it did not detect CBC's lack of integrity protection. This emphasises the importance of fully analysing the limitations of potential algorithms during the Planning and Requirements phase of the SDLC, as well as cross-testing to capture additional errors.
 
 ![CBCAttemptedReconstruction](../../cbc_output/cbc_reconstruction.bmp)
 *Figure: Failed Image Reconstruction Attempt When Using CBC.*
 
+![CBCBanditClean](bandit_cbc_result.png)
+*Figure: Bandit Detecting No Errors Within CBC Variant.*
+
 ![GCMAttemptedReconstruction](../../gcm_output/gcm_reconstruction.bmp)
 *Figure: Failed Image Reconstruction Attempt When Using GCM.*
+
+![GCMBanditClean](bandit_gcm_result.png)
+*Figure: Bandit Detecting No Errors Within GCM Variant.*
 
 ## References
 
@@ -175,3 +205,5 @@ The code was then retested using both mitigation methods, with both outputs bein
 [^Munir2024ImageEncryption]: <https://www.mdpi.com/2624-800X/4/1/7>
 [^Dworkin2001NISTECBCBC]: <https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-38a.pdf>
 [^Dworkin2007NISTGCM]: <https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-38d.pdf>
+[^Wattar2020AESImages]: <https://turcomat.org/index.php/turkbilmat/article/view/14117>
+[^Ruslan2026StaticAnalysis]: <https://ieeexplore.ieee.org/document/11596372/>
