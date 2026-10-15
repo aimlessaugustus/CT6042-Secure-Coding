@@ -9,7 +9,7 @@ Linked CWEs: [^NIST2026AESCB][^Dreeg2022AESECB]
 - CWE-327: Use of a Broken or Risky Cryptographic Algorithm
 - CWE-1240: Use of a Cryptographic Primitive with a Risky Implementation
 
-OWASP
+OWASP Top 10 2025 Mapping: A04 Cryptographic Failures [^OWASP2025AO4]
 
 ### Vulnerability Explanation: Underlying Security Theory, Relevant Weaknesses and Classification
 
@@ -182,7 +182,7 @@ def decrypt(data: bytes, key: bytes) -> bytes:
 
 ### Retesting For Resilience
 
-Both proposed solutions underwent the same testing as the initial ECB code. In both cases, Bandit no longer detected the presence of CWE-327, and the produced images lacked low entropy zones that produced recognisable outlines when `ecb_view.py` was run. Whilst appearing successful, these tests revealed a limitation of Bandit, as it did not detect CBC's lack of integrity protection. This emphasises the importance of fully analysing the limitations of potential algorithms during the Planning and Requirements phase of the SDLC, as well as cross-testing to capture additional errors.
+Both proposed solutions underwent the same testing as the initial ECB code. In both cases, Bandit no longer detected the presence of CWE-327, and the produced images lacked low entropy zones that produced recognisable outlines when `ecb_view.py` was run. Whilst appearing successful, these tests revealed a limitation of Bandit, as it did not detect CBC's lack of integrity protection, despite CBC being considered insecure by OWASP [^OWASP2025AO4]. This emphasises the importance of fully analysing the limitations of potential algorithms during the Planning and Requirements phase of the SDLC, as well as cross-testing to capture additional errors.
 
 ![CBCAttemptedReconstruction](../../cbc_output/cbc_reconstruction.bmp)
 *Figure: Failed Image Reconstruction Attempt When Using CBC.*
@@ -207,3 +207,4 @@ Both proposed solutions underwent the same testing as the initial ECB code. In b
 [^Dworkin2007NISTGCM]: <https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-38d.pdf>
 [^Wattar2020AESImages]: <https://turcomat.org/index.php/turkbilmat/article/view/14117>
 [^Ruslan2026StaticAnalysis]: <https://ieeexplore.ieee.org/document/11596372/>
+[^OWASP2025AO4]: <https://top10.owasp.org/2025/A04_2025-Cryptographic_Failures/>
