@@ -1,16 +1,5 @@
 # Cryptographic Failure Notes
 
-<!--
-## To Do
-
-Check out this site to learn more about ECB Penguin attacks[^ecbpenguingithub].
-
-I want to develop an example that is similar where AES-ECB is shown both statically (A poor implementation and dynamically), and can be decrypted through repeated byte strings.
-
-This maps to CVE-2022-28382, which can be referenced within the report[^CVE202228382].
-
--->
-
 ## CVE-2022-28382: Verbatim Drives Using AES-256-ECB Enabling Image Reconstruction
 
 CVSS 3.1 Score: 7.5 (CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N) [^NIST2026AESCB]
@@ -25,10 +14,6 @@ Linked CWEs: [^NIST2026AESCB][^Dreeg2022AESECB]
 This laboratory example is designed to emulate a weakness found within Verbatim Keypad Secure drives discovered in 2022. The INIC-3637EN chip firmware within the drives was coded to use AES-256-ECB for encryption. When encrypting with AES, a message or file is required to be broken down into 16 byte blocks, with cipher modes such as ECB chaining blocks together to produce a complete encrypted file.
 
 ECB encrypts each block independently, which allows for faster encryption than other codebooks, but provides insufficent diffusion for structured files such as images that have large numbers of repeating bytes [^Riatma2025AESModes]. This enables the disclosure of information by a threat actor through the appending of individual blocks together with an arbitary image header.
-
-<!--
-When encrypting using AES, the message is required to be broken into blocks of 16 bytes. [When there is insufficient data to completely fill a block, such as during the final round, padding is added to meet this requirement.] To chain these individual blocks together, cipher modes such as electronic codebook ECB are employed. ECB functions by encrypting each block independently, which provides insufficient diffusion to properly obfuscate larger datasets and images. Using ECB in these instances results in a large number of repeatable
--->
 
 ### Demonstration of Exploitability
 
@@ -106,6 +91,9 @@ The code was then retested using both mitigation methods, with both outputs bein
 
 ![CBCAttemptedReconstruction](../../cbc_output/cbc_reconstruction.bmp)
 *Failed Image Reconstruction Attempt When Using CBC.*
+
+![GCMAttemptedReconstruction](../../gcm_output/gcm_reconstruction.bmp)
+*Failed Image Reconstruction Attempt When Using GCM.*
 
 ## References
 
