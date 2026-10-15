@@ -4,7 +4,7 @@
 
 CVSS 3.1 Score: 7.5 (CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N) [^NIST2026AESCB]
 
-Linked CWEs: [^NIST2026AESCB][^Dreeg2022AESECB]
+Linked CWEs: [^NIST2026AESCB][^Deeg2022AESECB]
 
 - CWE-327: Use of a Broken or Risky Cryptographic Algorithm
 - CWE-1240: Use of a Cryptographic Primitive with a Risky Implementation
@@ -199,7 +199,6 @@ Both proposed solutions underwent the same testing as the initial ECB code. In b
 ## References
 
 [^NIST2026AESCB]: <https://nvd.nist.gov/vuln/detail/cve-2022-28382>
-[^Dreeg2022AESECB]: <https://packetstorm.news/files/id/167491>
 [^Riatma2025AESModes]: <https://jurnal.polinema.ac.id/index.php/jartel/article/view/7323>
 [^Boussif2025AES]: <https://ieeexplore.ieee.org/document/9826324>
 [^Munir2024ImageEncryption]: <https://www.mdpi.com/2624-800X/4/1/7>
@@ -208,3 +207,4 @@ Both proposed solutions underwent the same testing as the initial ECB code. In b
 [^Wattar2020AESImages]: <https://turcomat.org/index.php/turkbilmat/article/view/14117>
 [^Ruslan2026StaticAnalysis]: <https://ieeexplore.ieee.org/document/11596372/>
 [^OWASP2025AO4]: <https://top10.owasp.org/2025/A04_2025-Cryptographic_Failures/>
+[^Deeg2022AESECB]: <https://www.syss.de/fileadmin/dokumente/Publikationen/Advisories/SYSS-2022-002.txt>
