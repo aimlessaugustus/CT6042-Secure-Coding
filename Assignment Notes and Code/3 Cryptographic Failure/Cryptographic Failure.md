@@ -182,6 +182,9 @@ def decrypt(data: bytes, key: bytes) -> bytes:
     return decryptor.update(ciphertext) + decryptor.finalize()
 ```
 
+![TamperDetection](tamperdetection.png)
+*Figure: Tamper Detection Catching a Modified Encrypted File*
+
 ### Retesting For Resilience
 
 Both proposed solutions underwent the same testing as the initial ECB code. In both cases, Bandit no longer detected the presence of CWE-327, and the produced images contained zero repeating blocks. No recognisable outlines were visible when `ecb_view.py` was run. Whilst appearing successful, these tests revealed a limitation of Bandit, as it did not detect CBC's lack of integrity protection, despite CBC being considered deprecated by OWASP [^OWASP2025AO4]. This emphasises the importance of fully analysing the limitations of potential algorithms during PW.2, as well as cross-testing to capture additional errors during PW.7 and PW.8 pf the NIST SSDF [^NIST2022SSDF].
