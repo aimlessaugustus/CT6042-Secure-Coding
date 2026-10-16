@@ -105,7 +105,7 @@ These limitations emphasise the need to use multiple tools such as exploit-based
 The `repeat_counter.py` script was also used to perform ciphertext block analysis on encrypted images.
 
 ![Bandit Detecting ECB Vulnerability](banditecbdetection.png)
-*Figure: Bandit successfuly detecting CWE-327 within the code*
+*Figure: Bandit successfully detecting CWE-327 within the code*
 
 ![Repeated Bytes in File](repeated_bytes_in_file.png)
 *Figure: Repeated Bytes within the ECB Encrypted Image. There were 31,586 instances of duplicated blocks, out of 49,155 total.*
