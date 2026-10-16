@@ -108,7 +108,7 @@ The `repeat_counter.py` script was also used to perform ciphertext block analysi
 *Figure: Bandit successfuly detecting CWE-327 within the code*
 
 ![Repeated Bytes in File](repeated_bytes_in_file.png)
-*Figure: Repeated Bytes within the ECB Encrypted Image. 31,586 blocks were repeated in total.*
+*Figure: Repeated Bytes within the ECB Encrypted Image. There were 31,586 instances of duplicated blocks, out of 49,155 total.*
 
 ### How to Mitigate the Vulnerability
 
@@ -199,6 +199,9 @@ There are also other residual risks present within the proposed fixes, such as C
 
 ![GCMBanditClean](bandit_gcm_result.png)
 *Figure: Bandit Detecting No Errors Within GCM Variant.*
+
+![RepeatedBlocksComparison](repeated_blocks_comparison.png)
+*Figure: Repeated Block Comparison Showing 0 Repeats in Proposed Solutions.*
 
 ## References
 
