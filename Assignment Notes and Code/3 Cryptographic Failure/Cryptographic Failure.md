@@ -15,7 +15,7 @@ OWASP Top 10 2025 Mapping: A04 Cryptographic Failures [^OWASP2025AO4]
 
 This laboratory example is designed to emulate a weakness found within Verbatim Keypad Secure drives discovered in 2022. The INIC-3637EN chip firmware within the drives was coded to use AES-256-ECB for encryption. When encrypting with AES, a message or file is required to be broken down into 16 byte blocks, with cipher modes such as ECB defining how blocks relate.
 
-ECB encrypts each block independently, which allows for faster encryption than other modes, but results in deterministic block encryption, which is detrimental to structured files such as images that have large numbers of repeating bytes [^Dworkin2001NISTECBCBC][^Riatma2025AESModes]. This enables a threat actor to breach data confidentiality through the prepending of individual blocks together with an arbitary image header.
+ECB encrypts each block independently, which has been found to be faster than other cipher modes in lab experimentation, but results in deterministic block encryption, which is detrimental to structured files such as images that have large numbers of repeating bytes [^Dworkin2001NISTECBCBC][^Riatma2025AESModes]. This enables a threat actor to breach data confidentiality through the prepending a forged header to the unchanged ciphertext.
 
 ### Demonstration of Exploitability
 
@@ -98,9 +98,9 @@ python3 ecb_view.py test.bmp.enc --width 512
 
 ### Identifying the Vulnerability Using Techniques and Tools
 
- To identify the vulnerability, a combination of SAST tooling and exploit-based verification was used. Bandit, the most widely adopted Python SAST tool, was able to successfully detect CWE-327 within the code, specifically attributing the use of ECB within the generated report [^Ruslan2026StaticAnalysis]. Whilst this worked for the lab example, Bandit as a tool is limited to Python, meaning that it would be unsuitable if the driver firmware is written in another language. Furthermore, Bandit's detection rule was based on the use of the `crypography` module's `ECB` mode and failed to detect logic-based errors within the code, such as the key and encrypted objects being stored in the same directory, meaning that it could struggle to identify a manual logic-based implementation of the ECB cipher mode.
+ To identify the vulnerability, a combination of SAST tooling and exploit-based verification was used. Bandit, the most widely adopted Python SAST tool, was able to successfully detect CWE-327 within the code, specifically attributing the use of ECB within the generated report [^Ruslan2026StaticAnalysis]. Whilst this worked for the lab example, Bandit as a tool is limited to Python, meaning that it would be unsuitable if the driver firmware is written in another language. Furthermore, Bandit's detection rule was based on the use of the `cryptography` module's `ECB` mode and failed to detect logic-based errors within the code, such as the key and encrypted objects being stored in the same directory, meaning that it could struggle to identify a manual logic-based implementation of the ECB cipher mode.
 
-These limitations emphasise the need to use multiple tools such as exploit-based verification and byte analysis during software testing, as these can reveal patterns such as low entropy zones which create outlines in encrypted image files that SAST tooling could miss. Likewise, SAST tooling can capture a wider range of errors than a specific exploit script.
+These limitations emphasize the need to use multiple tools such as exploit-based verification and byte analysis during software testing, as these can reveal patterns such as low entropy zones which create outlines in encrypted image files that SAST tooling could miss. Likewise, SAST tooling can capture a wider range of errors than a specific exploit script.
 
 The `repeat_counter.py` script was also used to perform ciphertext block analysis on encrypted images.
 
@@ -112,9 +112,9 @@ The `repeat_counter.py` script was also used to perform ciphertext block analysi
 
 ### How to Mitigate the Vulnerability
 
-Mitigation of the vulnerability would occur during the Requirements and Analysis phase of the SSDLC, when developers define appropriate encryption methods for their application use case. Developing firmware for constrained devices like the INIC-3637EN poses an additional challenge of balancing a cryptographically secure cipher mode with limited available processing power, which had to be considered when proposing mitigations.
+Mitigation of the vulnerability would occur during the PW.2, PW.7 and PW.8 of the NIST SSDF, when developers define appropriate encryption methods for their application use case [^NIST2022SSDF]. Developing firmware for constrained devices like the INIC-3637EN poses an additional challenge of balancing a cryptographically secure cipher mode with limited available processing power, which had to be considered when proposing mitigations.
 
-The first mitigation is to use AES-256-CBC, which uses an Initialisation Vector to chain blocks and eliminate the repeated byte patterns at the cost of processing power [^Dworkin2001NISTECBCBC][^Munir2024ImageEncryption]. Whilst CBC is vulnerable to padding attacks, the impact of this risk is reduced within the system context, as drives have no oracle to report padding[^Boussif2025AES]. The second mitigation option is to use AES-256-GCM, includes authentication methods to identify tampering [^Dworkin2007NISTGCM]. Whilst more processing power is consumed than the other two methods, AES-256-GCM has still be identified as suitable for constrained device development [^Riatma2025AESModes].
+The first mitigation is to use AES-256-CBC, which uses an Initialisation Vector to chain blocks and eliminate the repeated byte patterns at the cost of introducing a non-parallelisable mode and increasing the size of files with a 16 byte IV [^Dworkin2001NISTECBCBC][^Munir2024ImageEncryption]. Whilst CBC is vulnerable to padding attacks, the impact of this risk is reduced within the system context, as drives have no oracle to report padding[^Boussif2025AES]. The second mitigation option is to use AES-256-GCM, includes authentication methods to identify tampering [^Dworkin2007NISTGCM]. Whilst more processing power is consumed than the other two methods, AES-256-GCM has still be identified as suitable for constrained device development [^Riatma2025AESModes].
 
 *Listing: Updated Code with CBC Encryption for Chaining*
 
@@ -184,9 +184,9 @@ def decrypt(data: bytes, key: bytes) -> bytes:
 
 ### Retesting For Resilience
 
-Both proposed solutions underwent the same testing as the initial ECB code. In both cases, Bandit no longer detected the presence of CWE-327, and the produced images lacked low entropy zones that produced recognisable outlines when `ecb_view.py` was run. Whilst appearing successful, these tests revealed a limitation of Bandit, as it did not detect CBC's lack of integrity protection, despite CBC being considered insecure by OWASP [^OWASP2025AO4]. This emphasises the importance of fully analysing the limitations of potential algorithms during the Planning and Requirements phase of the SDLC, as well as cross-testing to capture additional errors.
+Both proposed solutions underwent the same testing as the initial ECB code. In both cases, Bandit no longer detected the presence of CWE-327, and the produced images contained zero repeating bytes. No recognisable outlines were visible when `ecb_view.py` was run. Whilst appearing successful, these tests revealed a limitation of Bandit, as it did not detect CBC's lack of integrity protection, despite CBC being considered deprecated by OWASP [^OWASP2025AO4]. This emphasises the importance of fully analysing the limitations of potential algorithms during PW.2, as well as cross-testing to capture additional errors during PW.7 and PW.8 pf the NIST SSDF [^NIST2022SSDF].
 
-Finally, ciphertext block frequency analysis confirmed zero repeated bytes in both the CBC and GCM solutions.
+There are also other residual risks present within the proposed fixes, such as CWE-312 due to the key being stored next to the ciphertext. Furthermore, nonce reuse is catastrophic for AES-256-GCM [^Dworkin2007NISTGCM]. Whilst the code generates a fresh nonce each time, a drive using one key for individual memory sectors could not. Thus, future work lies in evaluating the implementation of XTS-AES, which could be more storage efficient for fixed-size sectors, as it does not feature GCM's authentication tag [^Dworkin2010NISTXTSAES].
 
 ![CBCAttemptedReconstruction](../../cbc_output/cbc_reconstruction.bmp)
 *Figure: Failed Image Reconstruction Attempt When Using CBC.*
@@ -212,3 +212,5 @@ Finally, ciphertext block frequency analysis confirmed zero repeated bytes in bo
 [^Ruslan2026StaticAnalysis]: <https://ieeexplore.ieee.org/document/11596372/>
 [^OWASP2025AO4]: <https://top10.owasp.org/2025/A04_2025-Cryptographic_Failures/>
 [^Deeg2022AESECB]: <https://www.syss.de/fileadmin/dokumente/Publikationen/Advisories/SYSS-2022-002.txt>
+[^NIST2022SSDF]: <https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-218.pdf>
+[^Dworkin2010NISTXTSAES]: <https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-38e.pdf>
