@@ -93,7 +93,7 @@ def build_bmp_header(width: int, height: int) -> bytes:
 python3 ecb_view.py test.bmp.enc --width 512
 ```
 
-![ECB Image Reconstructed](../../ecb_output/ecb_exposed.bmp)
+![ECB Image Reconstructed](ecb_output/ecb_exposed.bmp)
 *Figure: Image Reconstructed from Attacking Script*
 
 ### Identifying the Vulnerability Using Techniques and Tools
@@ -191,13 +191,13 @@ Both proposed solutions underwent the same testing as the initial ECB code. In b
 
 There are also other residual risks present within the proposed fixes, such as CWE-312 due to the key being stored next to the ciphertext. Furthermore, nonce reuse is catastrophic for AES-256-GCM [^Dworkin2007NISTGCM]. Whilst the code generates a fresh nonce each time, a drive using one key for individual memory sectors could not. Thus, future work lies in evaluating the implementation of XTS-AES, which could be more storage efficient for fixed-size sectors, as it does not feature GCM's authentication tag [^Dworkin2010NISTXTSAES].
 
-![CBCAttemptedReconstruction](../../cbc_output/cbc_reconstruction.bmp)
+![CBCAttemptedReconstruction](cbc_output/cbc_reconstruction.bmp)
 *Figure: Failed Image Reconstruction Attempt When Using CBC.*
 
 ![CBCBanditClean](bandit_cbc_result.png)
 *Figure: Bandit Detecting No Errors Within CBC Variant.*
 
-![GCMAttemptedReconstruction](../../gcm_output/gcm_reconstruction.bmp)
+![GCMAttemptedReconstruction](gcm_output/gcm_reconstruction.bmp)
 *Figure: Failed Image Reconstruction Attempt When Using GCM.*
 
 ![GCMBanditClean](bandit_gcm_result.png)
