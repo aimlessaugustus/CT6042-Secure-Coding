@@ -1,0 +1,14 @@
+{
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Spring Boot-IdorLabApplication<idor-lab>",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "mainClass": "lab.idor.IdorLabApplication",
+      "projectName": "idor-lab",
+      "args": "",
+      "envFile": "${workspaceFolder}/.env"
+    }
+  ]
+}
