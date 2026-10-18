@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>lab</groupId>
+    <artifactId>deser-lab</artifactId>
+    <version>1.0.0</version>
+    <packaging>jar</packaging>
+
+    <name>CVE-2020-9484 Deserialisation Lab (vulnerable)</name>
+    <description>
+        Deliberately-vulnerable reproduction of the Apache Tomcat session
+        deserialisation sink (CVE-2020-9484 / CWE-502). For educational use only.
+    </description>
+
+    <properties>
+        <!-- JDK 8 or 11 is recommended so the classic CommonsCollections6
+             gadget chain fires reliably. release=8 keeps the bytecode portable. -->
+        <maven.compiler.release>8</maven.compiler.release>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencies>
+        <!--
+            THE VULNERABLE DEPENDENCY.
+            commons-collections 3.1 ships the InvokerTransformer / LazyMap /
+            TiedMapEntry classes that ysoserial's CommonsCollections* payloads
+            chain into remote code execution. The application code never
+            references this library directly; its mere presence on the classpath
+            is what makes the unfiltered readObject() exploitable.
+            SCA tools flag this as CVE-2015-7501 / CVE-2015-6420.
+        -->
+        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+            <version>3.1</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>deser-lab</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+            </plugin>
+
+            <!-- Builds target/deser-lab.jar with commons-collections bundled,
+                 so the exploit can be run with a simple `java -jar`. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.5.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals><goal>shade</goal></goals>
+                        <configuration>
+                            <transformers>
+                                <transformer
+                                    implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>lab.SessionLoaderApp</mainClass>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
