@@ -6,8 +6,14 @@ This laboratory example emulates CVE-2020-9484, in which Apache Tomcat’s Persi
 
 ## Demonstration of Exploitability
 
+The minimal sink is a single unfiltered readObject() on a session file (Listing~X). Exploitation needs no flaw in the application’s own classes. Using ysoserial, an attacker serialises a CommonsCollections6 gadget chain that embeds an operating-system command, here touch /tmp/pwned, and writes the result as a .session file; in the lab this is placed directly, while in CVE-2020-9484 a ../ session identifier redirected the store to an uploaded file. When the application reloads that session, readObject() rebuilds the object graph and the chain executes during reconstruction, before any value is returned (Figure~X). The dropped /tmp/pwned file confirms arbitrary execution. Because the command runs with the JVM’s privileges, impact is complete: confidentiality, integrity and availability are all lost. The application never references Commons Collections; its presence on the classpath suffices.
+
 ## Identifying the Vulnerability Using Techniques and Tools
 
 ## How to Mitigate the Vulnerability
 
 ## Retesting For Resilience
+
+---
+
+# Supplementary example information
