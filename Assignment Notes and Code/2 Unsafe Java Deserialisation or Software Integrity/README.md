@@ -9,8 +9,27 @@ This laboratory example emulates CVE-2020-9484, in which Apache Tomcat’s Persi
 The minimal sink is a single unfiltered readObject() on a session file (Listing~X). Exploitation needs no flaw in the application’s own classes. Using ysoserial, an attacker serialises a CommonsCollections6 gadget chain that embeds an operating-system command, here touch /tmp/pwned, and writes the result as a .session file; in the lab this is placed directly, while in CVE-2020-9484 a ../ session identifier redirected the store to an uploaded file. When the application reloads that session, readObject() rebuilds the object graph and the chain executes during reconstruction, before any value is returned (Figure~X). The dropped /tmp/pwned file confirms arbitrary execution. Because the command runs with the JVM’s privileges, impact is complete: confidentiality, integrity and availability are all lost. The application never references Commons Collections; its presence on the classpath suffices.
 
 ![alt text](Images/successfuldeserealisationexploit.png)
+*Figure: Successful RCE on an Ubuntu VM running the vulnerabe application.*
+
+*Listing: The insecure sink within VulnerableSessionStore.java*
+
+```java
+        try (
+                FileInputStream fis = new FileInputStream(file); // Insecure deserialisation sink. No allow-list or filtering is
+                // applied before readObject() reconstructs the object graph.
+                 ObjectInputStream ois = new ObjectInputStream(fis)) {
+            return ois.readObject();
+        }
+```
 
 ## Identifying the Vulnerability Using Techniques and Tools
+
+DRAFT!
+
+Three complementary techniques identified the flaw. Software composition analysis (OWASP Dependency-Check) flagged commons-collections 3.1 as carrying the InvokerTransformer gadget chain (CVE-2015-7501, CVE-2015-6420), which static review alone would miss because the application never imports the library \parencite{OWASP2024DepCheck}. Static analysis with Semgrep’s Java ruleset independently raised an unsafe-deserialisation finding on VulnerableSessionStore.load(), locating the unfiltered readObject() sink (Figure~X) \parencite{Semgrep2024}. The two findings were then confirmed dynamically: the ysoserial CommonsCollections6 payload executed during deserialisation and created /tmp/pwned, proving the warnings were exploitable rather than theoretical (Figure~X).
+
+![alt text](Images/semgrepscanningjavavulnevidence.png)
+*Figure: Semgrep detecting the deserialisation vulnerability within VulnerableSessionStore.java*
 
 ## How to Mitigate the Vulnerability
 
