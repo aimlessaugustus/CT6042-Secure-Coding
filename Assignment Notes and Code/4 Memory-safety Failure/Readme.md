@@ -79,6 +79,9 @@ script_regex_end(&e);
 
 Re-running the trigger against the fixed build reports zero overflow, and AddressSanitizer is silent. The regression guard, which fails on the vulnerable binary, now passes, and belongs in CI so dynamic testing catches any recurrence pre-release (SSDF PW.8, RV.3). Residual risk remains as sanitizers only cover executed paths, hardening is not correctness, and unpatched instances stay exposed.
 
+![alt text](Images/asanpass.png)
+*Figure: Address Sanitizer passing the amended code.*
+
 ![alt text](Images/regressiontest.png)
 *Figure: regression_test.c failing the vulnerable code, and passing the patched code.*
 
