@@ -1,0 +1,19 @@
+# Build output
+target/
+
+# Generated / payload session files (never commit exploit payloads)
+sessions/*.session
+
+# ysoserial checkout if cloned inside the repo
+ysoserial/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.settings/
+.classpath
+.project
+
+# OS
+.DS_Store

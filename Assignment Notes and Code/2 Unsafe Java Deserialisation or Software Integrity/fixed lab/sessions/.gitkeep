@@ -1,0 +1,2 @@
+# Stand-in for Tomcat's FileStore session directory.
+# Generated *.session files are git-ignored (see ../.gitignore).

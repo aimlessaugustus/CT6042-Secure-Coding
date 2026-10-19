@@ -36,6 +36,8 @@ Three complementary techniques identified the flaw. Software composition analysi
 
 ## How to Mitigate the Vulnerability
 
+The fix constrains deserialisation at the point of reconstruction using a JEP 290 ObjectInputFilter, the mechanism behind Tomcat’s own remediation (Listing~X) \parencite{Oracle2018JEP290}. Because the gadget chain executes during reconstruction, validating the returned object would come too late; the filter instead vets each class before instantiation. A strict allow-list is used, admitting only the classes a legitimate session contains and rejecting all others (!*). An allow-list is preferred to a block-list because the set of known gadget chains grows over time, so denial by name fails open, whereas permitting only the expected fails safe. The trade-off is maintenance: the allow-list must track legitimate session contents, and an over-broad entry would reopen the gap. Where native serialisation is not required, migrating to a data-only format such as JSON removes the sink entirely \parencite{OWASP2022Deser}.
+
 ## Retesting For Resilience
 
 ---
