@@ -26,7 +26,10 @@ The minimal sink is a single unfiltered readObject() on a session file (Listing~
 
 DRAFT!
 
-Three complementary techniques identified the flaw. Software composition analysis (OWASP Dependency-Check) flagged commons-collections 3.1 as carrying the InvokerTransformer gadget chain (CVE-2015-7501, CVE-2015-6420), which static review alone would miss because the application never imports the library \parencite{OWASP2024DepCheck}. Static analysis with Semgrep’s Java ruleset independently raised an unsafe-deserialisation finding on VulnerableSessionStore.load(), locating the unfiltered readObject() sink (Figure~X) \parencite{Semgrep2024}. The two findings were then confirmed dynamically: the ysoserial CommonsCollections6 payload executed during deserialisation and created /tmp/pwned, proving the warnings were exploitable rather than theoretical (Figure~X).
+Three complementary techniques identified the flaw. Software composition analysis using OSV-Scanner flagged commons-collections 3.1 as carrying the InvokerTransformer gadget chain, reporting the CVE-2015-7501 advisory. Static review alone would miss because the application never imports the library directly. \parencite{OSVScanner2024}. Static analysis with Semgrep's Java ruleset independently raised an unsafe-deserialisation finding on `VulnerableSessionStore.load()`, locating the unfiltered `readObject()` sink (Figure~X) \parencite{Semgrep2024}. The two findings were then confirmed dynamically through the ysoserial `CommonsCollections6` payload executing during deserialisation and created `/tmp/pwned`, proving the warnings were exploitable rather than theoretical (Figure~X).
+
+![alt text](Images/osvscannersve20157501.png)
+*Figure: OSV-Scanner flagging CVE-2015-7501 within the repository.*
 
 ![alt text](Images/semgrepscanningjavavulnevidence.png)
 *Figure: Semgrep detecting the deserialisation vulnerability within VulnerableSessionStore.java*
@@ -138,10 +141,12 @@ To scan with semgrep, run:
 semgrep scan
 ```
 
-To scan with maven, first get an api key from: nvd.nist.gov/developers/request-an-api-key
+To scan with the OSV
 
-then run the following in the decompiled root on the VM:
+# install (Go binary; one of these will suit your VM)
 
-```bash
-mvn org.owasp:dependency-check-maven:check
-```
+sudo snap install osv-scanner
+
+# run from the lab root
+
+osv-scanner --lockfile=pom.xml .
