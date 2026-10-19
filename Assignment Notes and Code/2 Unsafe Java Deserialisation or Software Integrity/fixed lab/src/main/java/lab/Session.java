@@ -3,22 +3,20 @@ package lab;
 import java.io.Serializable;
 
 /**
- * A benign session attribute used to represent the type of object that a
- * servlet container may legitimately serialise and store within an HTTP
- * session.
+ * A benign session-attribute object, representing the kind of value a servlet
+ * container legitimately serialises to disk when it swaps an idle HTTP session
+ * out of memory. It is harmless in itself and exists only to show what normal
+ * use of the store looks like, so that the exploit can be read against a
+ * baseline rather than in isolation.
  *
- * <p>
- * This class is not involved in the vulnerability itself. It exists solely as a
- * normal baseline example, highlighting that insecure deserialisation arises
- * from processing attacker-controlled object graphs rather than from the
- * application's session objects.
+ * <p>It is worth stressing that the vulnerability has nothing to do with this
+ * class. The attacker never needs a malicious {@code Session}; the payload is an
+ * entirely separate object graph, assembled from classes already present on the
+ * classpath, as the project README describes.
  */
 public class Session implements Serializable {
 
-    /**
-     * Fixed serialVersionUID so that saved sessions remain loadable across
-     * builds.
-     */
+    /** Fixed serialVersionUID so that saved sessions remain loadable across builds. */
     private static final long serialVersionUID = 1L;
 
     private final String sessionId;
@@ -31,17 +29,9 @@ public class Session implements Serializable {
         this.role = role;
     }
 
-    public String getSessionId() {
-        return sessionId;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getRole() {
-        return role;
-    }
+    public String getSessionId() { return sessionId; }
+    public String getUsername()  { return username; }
+    public String getRole()      { return role; }
 
     @Override
     public String toString() {

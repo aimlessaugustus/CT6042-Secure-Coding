@@ -29,17 +29,40 @@ DRAFT!
 Three complementary techniques identified the flaw. Software composition analysis using OSV-Scanner flagged commons-collections 3.1 as carrying the InvokerTransformer gadget chain, reporting the CVE-2015-7501 advisory. Static review alone would miss because the application never imports the library directly. \parencite{OSVScanner2024}. Static analysis with Semgrep's Java ruleset independently raised an unsafe-deserialisation finding on `VulnerableSessionStore.load()`, locating the unfiltered `readObject()` sink (Figure~X) \parencite{Semgrep2024}. The two findings were then confirmed dynamically through the ysoserial `CommonsCollections6` payload executing during deserialisation and created `/tmp/pwned`, proving the warnings were exploitable rather than theoretical (Figure~X).
 
 ![alt text](Images/osvscannersve20157501.png)
-*Figure: OSV-Scanner flagging CVE-2015-7501 within the repository.*
+*Figure: OSV-Scanner flagging CVE-2015-7501 within the repository*
 
 ![alt text](Images/semgrepscanningjavavulnevidence.png)
 *Figure: Semgrep detecting the deserialisation vulnerability within VulnerableSessionStore.java*
 
 ## How to Mitigate the Vulnerability
 
-The fix constrains deserialisation at the point of reconstruction using a JEP 290 ObjectInputFilter, the mechanism behind Tomcat’s own remediation (Listing~X) \parencite{Oracle2018JEP290}. Because the gadget chain executes during reconstruction, validating the returned object would come too late; the filter instead vets each class before instantiation. A strict allow-list is used, admitting only the classes a legitimate session contains and rejecting all others (!*). An allow-list is preferred to a block-list because the set of known gadget chains grows over time, so denial by name fails open, whereas permitting only the expected fails safe. The trade-off is maintenance: the allow-list must track legitimate session contents, and an over-broad entry would reopen the gap. Where native serialisation is not required, migrating to a data-only format such as JSON removes the sink entirely \parencite{OWASP2022Deser}.
+The fix applies two controls, one per finding. For the sink, deserialisation is constrained at reconstruction using a JEP 290 ObjectInputFilter (Listing~X), the mechanism behind Tomcat’s own remediation \parencite{Oracle2018JEP290}. Because the gadget chain executes during reconstruction, validating the returned object would act too late. The filter instead vets each class beforehand using a strict allow-list (!*) that fails safe as new gadget chains emerge. For the dependency, the vulnerable commons-collections 3.1 (CVE-2015-7501) is removed from the build, eliminating the gadget classes the chain relied on. Addressing both the sink and the dependency reflects defence-in-depth, but comes with the trade-off of ongoing allow-list and dependency maintenance \parencite{OWASP2022Deser}.
+
+*Listing: The allow-list filter being enabled within MitigatedSessionStore.java*
+
+```java
+        try (
+                FileInputStream fis = new FileInputStream(file);
+                ObjectInputStream ois = new ObjectInputStream(fis)) {
+            // Security control. The allow-list filter is set before readObject()
+            // so a disallowed class is rejected during reconstruction.
+            ois.setObjectInputFilter(allowListFilter());
+            return ois.readObject();
+        }
+```
 
 ## Retesting For Resilience
 
+The ysoserial payload was rejected by the filter, preventing execution on the VM (Figure~X), and OSV-Scanner no longer flagged commons-collections (Figure~X). Semgrep still reported the sink (Figure~X): a false positive, as it matches the readObject() pattern statically and cannot see the runtime filter. Residual risk remains, since an allow-listed class could itself be exploitable. Migrating to a data-only format would remove the sink entirely.
+
+![alt text](Images/fixeddesercodesemgrep.png)
+*Figure: Semgrep scan on the mitigated code still detecting a potential serialisation vulnerability*
+
+![alt text](Images/fixeddesercodeosvscanner.png)
+*Figure: OSV-Scanner on the mitigated code no longer detecting commons-collections 3.1*
+
+![alt text](Images/faileddeserialisationonvm.png)
+*Figure: RCE attempt caught in the filter on an Ubuntu VM running the fixed application*
 ---
 
 # Supplementary Information
@@ -135,7 +158,27 @@ cp sessions/evil.session /tmp/evil.session
 java -jar target/deser-lab.jar load "../../../../tmp/evil"
 ```
 
-## Testing
+### To retest the fixed version
+
+```bash
+LAB=~/Documents/"fixed lab"
+YSO=/home/testmachine/Documents/ysoserial/target/ysoserial-0.0.6-SNAPSHOT-all.jar
+
+cd "$LAB"
+mkdir -p sessions
+java -jar "$YSO" CommonsCollections6 "touch /tmp/pwned" > "$LAB/sessions/evil.session"
+
+ls -l sessions/evil.session     
+
+# Retesting the attack against the mitigated store
+
+  cd "$LAB"
+  rm -f /tmp/pwned
+  java -jar target/deser-lab-fixed.jar load-safe evil
+  ls -l /tmp/pwned        # No such file → payload rejected, RCE prevented
+```
+
+## Testing (can be done on either file to validate results)
 
 To scan with semgrep, run:
 
@@ -145,10 +188,10 @@ semgrep scan
 
 To scan with the OSV
 
-# install (Go binary; one of these will suit your VM)
+### install (Go binary; one of these will suit your VM)
 
 sudo snap install osv-scanner
 
-# run from the lab root
+### run from the lab root
 
 osv-scanner --lockfile=pom.xml .

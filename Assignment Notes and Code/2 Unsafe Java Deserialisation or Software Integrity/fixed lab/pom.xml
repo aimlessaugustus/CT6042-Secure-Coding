@@ -5,44 +5,33 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>lab</groupId>
-    <artifactId>deser-lab</artifactId>
+    <artifactId>deser-lab-fixed</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
 
-    <name>CVE-2020-9484 Deserialisation Lab (vulnerable)</name>
+    <name>CVE-2020-9484 Deserialisation Lab (remediated)</name>
     <description>
-        Deliberately-vulnerable reproduction of the Apache Tomcat session
-        deserialisation sink (CVE-2020-9484 / CWE-502). For educational use only.
+        Remediated version of the Apache Tomcat session deserialisation lab.
+        The unfiltered sink and the vulnerable commons-collections dependency
+        have both been removed; deserialisation is constrained by a JEP 290
+        allow-list filter. For educational use only.
     </description>
 
     <properties>
-        <!-- Bytecode target for the lab's own classes. 11 is a safe floor that
-             compiles on every current JDK (newer JDKs no longer accept target 8).
-             This is independent of the JVM used to run the exploit; the gadget
-             chain's reliability depends on that runtime, not on this value. -->
         <maven.compiler.release>11</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-    <dependencies>
-        <!--
-            THE VULNERABLE DEPENDENCY.
-            commons-collections 3.1 ships the InvokerTransformer / LazyMap /
-            TiedMapEntry classes that ysoserial's CommonsCollections* payloads
-            chain into remote code execution. The application code never
-            references this library directly; its mere presence on the classpath
-            is what makes the unfiltered readObject() exploitable.
-            SCA tools flag this as CVE-2015-7501 / CVE-2015-6420.
-        -->
-        <dependency>
-            <groupId>commons-collections</groupId>
-            <artifactId>commons-collections</artifactId>
-            <version>3.1</version>
-        </dependency>
-    </dependencies>
+    <!--
+        The vulnerable commons-collections 3.1 dependency (CVE-2015-7501) has been
+        removed entirely. The application never referenced it; its presence was
+        what supplied the gadget chain, so dropping it closes the composition-level
+        finding that SCA reports, independently of the JEP 290 filter in the code.
+        There are now no third-party dependencies.
+    -->
 
     <build>
-        <finalName>deser-lab</finalName>
+        <finalName>deser-lab-fixed</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -50,8 +39,6 @@
                 <version>3.11.0</version>
             </plugin>
 
-            <!-- Builds target/deser-lab.jar with commons-collections bundled,
-                 so the exploit can be run with a simple `java -jar`. -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
