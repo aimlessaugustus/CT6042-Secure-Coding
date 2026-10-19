@@ -16,13 +16,65 @@ The minimal sink is the two-pass build (Listing X). A length function and a copy
 *Listing: Vulnerable passes within rift_vuln.c*
 
 ```c
-/* Length pass (le->is_args == 0). */
-return raw;                       /* rift_vuln.c:59 */
+/* Escape predicate -- the single flag both passes consult. */
+static int escape_active(const script_engine_t *e)
+{
+    return e->is_args;
+}
 
-/* Copy pass (e->is_args == 1). */
-*e->pos++ = '%';                  /* rift_vuln.c:81-83 -- 1 byte -> 3 */
-*e->pos++ = hex[cap[i] >> 4];
-*e->pos++ = hex[cap[i] & 0x0f];
+/* Length pass: handed the zero-initialised sub-engine, so is_args == 0. */
+static size_t copy_capture_len(const script_engine_t *le,
+                               const unsigned char *cap, size_t raw)
+{
+    if (escape_active(le)) /* False here, so no escaping cost is counted. */
+    {
+        /* ... Add two bytes per escapable character ... */
+    }
+
+    return raw; /* Buffer is sized to the raw capture width. */
+}
+
+/* Copy pass: runs on the main engine, where is_args == 1. */
+static void copy_capture(script_engine_t *e,
+                         const unsigned char *cap, size_t raw)
+{
+    if (escape_active(e)) /* True here, so each '+' is written as %2B. */
+    {
+        /* ... Emit three bytes per escapable character ... */
+    }
+}
+```
+
+## Testing to Identify
+
+Three techniques were applied. Static analysis came first: GCC's `-fanalyzer` and the Clang Static Analyzer both ran clean. This is expected rather than reassuring, because the undersizing and the overrun sit in different functions, gated by state set in a third, which local pattern-matching does not model (Listing P). Runtime instrumentation then exposed it. AddressSanitizer reported a heap-buffer-overflow write in `copy_capture`, one byte past an 8-byte allocation it traced to the length pass (Listing Q). A random fuzzer corroborated this, reaching the same crash within two inputs once one contained a plus sign (Listing R).
+
+# Testing Information
+
+## To run the initial exploit
+
+Within the project root, run
+
+```bash
+gcc rift_vuln.c -o rift_vuln
+./rift_vuln
+```
+
+## To identify the vulnerability in the file
+
+SAST:
+
+```bash
+gcc -fanalyzer -O2 -c rift_vuln.c -o /dev/null   
+clang --analyze rift_vuln.c                       
+```
+
+Fuzzers:
+
+```bash
+gcc -O0 -g -fsanitize=address fuzz_random.c -o fuzz_random
+
+clang -fsanitize=fuzzer,address fuzz_rift.c -o fuzz_rift
 ```
 
 # References
