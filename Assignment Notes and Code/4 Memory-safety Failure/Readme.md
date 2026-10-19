@@ -58,9 +58,7 @@ Three techniques were applied. Static analysis came first: GCC's `-fanalyzer` an
 ![alt text](Images/randomfuzzervuln.png)
 *Figure R: Random fuzzer detecting the memory overflow crash.*
 
-## Mitigating the Vulnerability
-
-### Mitigation and Justification
+## Mitigating and Justification
 
 The fix mirrors the upstream patch exactly. Nginx commit 524977e adds one line to `ngx_http_script_regex_end_code`, clearing `is_args` at the end of rewrite handling (Listing S)[^nginxFix]. The stale flag can then no longer leak into a following `set` or `if` capture, so the length and copy passes observe the same state and compute the same size. Resetting is preferable to propagating the flag into the sub-engine, because the capture in a `set` directive should be stored raw, not args-escaped. The change is a single assignment, so the performance cost is nil and no legitimate rewrite behaviour regresses.
 
@@ -76,6 +74,13 @@ static void script_regex_end(script_engine_t *e)
 /* ... in main, at the end of rewrite handling, before the set capture: */
 script_regex_end(&e);
 ```
+
+## Retest and Residual Risk
+
+Re-running the trigger against the fixed build reports zero overflow, and AddressSanitizer is silent. The regression guard, which fails on the vulnerable binary, now passes, and belongs in CI so dynamic testing catches any recurrence pre-release (SSDF PW.8, RV.3). Residual risk remains as sanitizers only cover executed paths, hardening is not correctness, and unpatched instances stay exposed.
+
+![alt text](Images/regressiontest.png)
+*Figure: regression_test.c failing the vulnerable code, and passing the patched code.*
 
 # Testing Information
 
@@ -106,6 +111,23 @@ clang -fsanitize=fuzzer,address fuzz_rift.c -o fuzz_rift
 gcc -O0 -g -fsanitize=address fuzz_random.c -o fuzz_random
 ./fuzz_random
 ```
+
+Running the regression test on both versions:
+
+```bash
+gcc -O0 -g -fsanitize=address rift_vuln.c  -o rift_vuln_asan
+gcc -O0 -g -fsanitize=address rift_fixed.c -o rift_fixed_asan
+./regression_test ./rift_vuln_asan    # FAIL  (expected — proves the guard works)
+./regression_test ./rift_fixed_asan   # PASS
+```
+
+or
+
+```bash
+make test
+```
+
+The make file can also `clean` or `create`.
 
 # References
 
