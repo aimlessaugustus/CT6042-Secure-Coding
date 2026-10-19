@@ -47,7 +47,35 @@ static void copy_capture(script_engine_t *e,
 
 ## Testing to Identify
 
-Three techniques were applied. Static analysis came first: GCC's `-fanalyzer` and the Clang Static Analyzer both ran clean. This is expected rather than reassuring, because the undersizing and the overrun sit in different functions, gated by state set in a third, which local pattern-matching does not model (Listing P). Runtime instrumentation then exposed it. AddressSanitizer reported a heap-buffer-overflow write in `copy_capture`, one byte past an 8-byte allocation it traced to the length pass (Listing Q). A random fuzzer corroborated this, reaching the same crash within two inputs once one contained a plus sign (Listing R).
+Three techniques were applied. Static analysis came first: GCC's `-fanalyzer` and the Clang Static Analyzer both ran without detecting errors. This is expected rather than reassuring, because the undersizing and the overrun sit in different functions, gated by state set in a third, which local pattern-matching does not model (Figure P). Runtime instrumentation then exposed it. AddressSanitizer reported a heap-buffer-overflow write in `copy_capture`, one byte past an 8-byte allocation it traced to the length pass (Figure Q). A random fuzzer corroborated this, reaching the same crash within two inputs once one contained a plus sign (Figure R).
+
+![alt text](Images/memoryoverflowsastfail.png)
+*Figure Q: -fanalyzer and Clang failing to detect the budder overflow error*
+
+![alt text](Images/addresssanitisercapturesinput.png)
+*Figure P: AddressSanitizer detecting the memory overflow in copy_capture*
+
+![alt text](Images/randomfuzzervuln.png)
+*Figure R: Random fuzzer detecting the memory overflow crash.*
+
+## Mitigating the Vulnerability
+
+### Mitigation and Justification
+
+The fix mirrors the upstream patch exactly. Nginx commit 524977e adds one line to `ngx_http_script_regex_end_code`, clearing `is_args` at the end of rewrite handling (Listing S)[^nginxFix]. The stale flag can then no longer leak into a following `set` or `if` capture, so the length and copy passes observe the same state and compute the same size. Resetting is preferable to propagating the flag into the sub-engine, because the capture in a `set` directive should be stored raw, not args-escaped. The change is a single assignment, so the performance cost is nil and no legitimate rewrite behaviour regresses.
+
+*Listing: The fix implemented within rift_fix.c*
+
+```c
+/* Mirrors ngx_http_script_regex_end_code. */
+static void script_regex_end(script_engine_t *e)
+{
+    e->is_args = 0; /* Upstream fix, nginx commit 524977e. */
+}
+
+/* ... in main, at the end of rewrite handling, before the set capture: */
+script_regex_end(&e);
+```
 
 # Testing Information
 
@@ -72,9 +100,11 @@ clang --analyze rift_vuln.c
 Fuzzers:
 
 ```bash
-gcc -O0 -g -fsanitize=address fuzz_random.c -o fuzz_random
-
 clang -fsanitize=fuzzer,address fuzz_rift.c -o fuzz_rift
+./fuzz_rift
+
+gcc -O0 -g -fsanitize=address fuzz_random.c -o fuzz_random
+./fuzz_random
 ```
 
 # References
@@ -82,3 +112,5 @@ clang -fsanitize=fuzzer,address fuzz_rift.c -o fuzz_rift
 [^NGINXRiftNIST]: <https://nvd.nist.gov/vuln/detail/cve-2026-42945>
 
 [^depthfirstRift]: <https://depthfirst.com/research/nginx-rift-achieving-nginx-rce-via-an-18-year-old-vulnerability>
+
+[^nginxFix]: <https://github.com/nginx/nginx/commit/524977e7c534e87e5b55739fa74601c9f1102686>
