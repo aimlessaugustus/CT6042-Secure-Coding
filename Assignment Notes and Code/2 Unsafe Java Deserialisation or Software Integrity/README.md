@@ -129,3 +129,19 @@ CVE- didn't use an overt identifier `evil.session`. Instead, the threat actor us
 cp sessions/evil.session /tmp/evil.session
 java -jar target/deser-lab.jar load "../../../../tmp/evil"
 ```
+
+## Testing
+
+To scan with semgrep, run:
+
+```bash
+semgrep scan
+```
+
+To scan with maven, first get an api key from: nvd.nist.gov/developers/request-an-api-key
+
+then run the following in the decompiled root on the VM:
+
+```bash
+mvn org.owasp:dependency-check-maven:check
+```
