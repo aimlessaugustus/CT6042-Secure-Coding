@@ -185,3 +185,34 @@ docker compose exec solr ls -l /tmp/pwned
 
 ![alt text](Images/RCEConfirmed.png)
 *Figure: Successful RCE confirmed on the left, with the LDAP server on the right confirming JNDI Lookup.*
+
+### Testing to Identify the Vulnerability
+
+To produce the sbom and run osv-scanner in the VM:
+
+```bash
+cd ~/log4shell-lab/vulhub/log4j/CVE-2021-44228
+docker compose cp solr:/opt/solr/server/lib/ext ~/log4shell-lab/solr-ext
+ls ~/log4shell-lab/solr-ext | grep log4j        # confirm the jars are present
+
+cd ~/log4shell-lab
+syft dir:solr-ext -o cyclonedx-json > sbom.cdx.json  # auditable component inventory
+grep -i log4j sbom.cdx.json                      # confirm syft found log4j-core 2.14.1
+osv-scanner scan -L sbom.cdx.json                # -> GHSA-jfh8-c2jp-5v3q / CVE-2021-44228
+
+# Producing a readable copy
+osv-scanner scan -L sbom.cdx.json --format markdown > ~/log4shell-lab/osv-report.md
+```
+
+![alt text](Image/osvscannerlog4shell.png)
+Figure: osv-scanner detecting CVE-2021-44228 as GHSA-jfh8-c2jp-5v3q.
+
+Running grype to corroborate results:
+
+```bash
+cd ~/log4shell-lab
+grype sbom:sbom.json                             # independent agreement on CVE-2021-44228
+```
+
+![alt text](Images/grypelog4shell.png)
+*Figure: Grype verifying the presence of the CVE using an independent database.*
