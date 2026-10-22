@@ -1,0 +1,11 @@
+name: osv-scan
+on: [push, pull_request]
+jobs:
+  sca:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: OSV scan (fails the build on any finding)
+        uses: google/osv-scanner-action@v2     # pin to the current release tag
+        with:
+          scan-args: "--recursive ./"
