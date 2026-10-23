@@ -1,6 +1,10 @@
 <mxfile host="65bd71144e">
     <diagram id="i8roCu7c9BATIwWNOWsr" name="Vulnerable Implementation Flow">
+<<<<<<< HEAD
         <mxGraphModel dx="1000" dy="1262" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="light-dark(#ffffff, #121212)" math="0" shadow="0">
+=======
+        <mxGraphModel dx="1133" dy="1009" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="light-dark(#ffffff, #121212)" math="0" shadow="0">
+>>>>>>> a649e32 (docs: updated diagrams)
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -49,7 +53,11 @@
         </mxGraphModel>
     </diagram>
     <diagram id="No-aO0dR9Oy_NgnS9DFt" name="Fixed Implementation Flow">
+<<<<<<< HEAD
         <mxGraphModel dx="825" dy="1041" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="light-dark(#ffffff, #121212)" math="0" shadow="0">
+=======
+        <mxGraphModel dx="1175" dy="1045" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="light-dark(#ffffff, #121212)" math="0" shadow="0">
+>>>>>>> a649e32 (docs: updated diagrams)
             <root>
                 <mxCell id="J0-yCFp5y-7XKTkabsxN-0"/>
                 <mxCell id="J0-yCFp5y-7XKTkabsxN-1" parent="J0-yCFp5y-7XKTkabsxN-0"/>
@@ -84,7 +92,7 @@
                         <mxPoint as="offset"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="c-YXCFSNy2zUGeqOQauk-4" parent="J0-yCFp5y-7XKTkabsxN-1" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.decision;whiteSpace=wrap;" value="JEP-290 Class Filter&lt;div&gt;(Is the class permitted)&lt;/div&gt;" vertex="1">
+                <mxCell id="c-YXCFSNy2zUGeqOQauk-4" parent="J0-yCFp5y-7XKTkabsxN-1" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.decision;whiteSpace=wrap;" value="JEP-290 Class Filter&lt;div&gt;(Is the class permitted?)&lt;/div&gt;" vertex="1">
                     <mxGeometry height="200" width="200" x="340" y="560" as="geometry"/>
                 </mxCell>
                 <mxCell id="c-YXCFSNy2zUGeqOQauk-5" parent="J0-yCFp5y-7XKTkabsxN-1" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" value="Object reconstructed" vertex="1">
