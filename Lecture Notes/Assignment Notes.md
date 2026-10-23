@@ -9,3 +9,4 @@ Demonstration could be:
 - Screenshots - keep focused on the important part.
 - Videos? - going beyond the brief if this is included. In the past, people have had live demos like a functional website.
 - VM IMages/Demos?
+- Use the dread framework/another framework to keep the discussion focused.
