@@ -1,0 +1,114 @@
+<mxfile host="65bd71144e">
+    <diagram id="i8roCu7c9BATIwWNOWsr" name="Vulnerable Implementation Flow">
+        <mxGraphModel dx="778" dy="693" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="light-dark(#ffffff, #121212)" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="WBrz2skgG_IkBZL04oJl-1" edge="1" parent="1" source="WBrz2skgG_IkBZL04oJl-2" style="edgeStyle=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="WBrz2skgG_IkBZL04oJl-4">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="WBrz2skgG_IkBZL04oJl-2" parent="1" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.start_1;whiteSpace=wrap;" value="Application loads session" vertex="1">
+                    <mxGeometry height="120" width="160" x="350" y="130" as="geometry"/>
+                </mxCell>
+                <mxCell id="WBrz2skgG_IkBZL04oJl-3" edge="1" parent="1" source="WBrz2skgG_IkBZL04oJl-4" style="edgeStyle=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="WBrz2skgG_IkBZL04oJl-11">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="WBrz2skgG_IkBZL04oJl-4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" value="Session file located" vertex="1">
+                    <mxGeometry height="120" width="160" x="350" y="300" as="geometry"/>
+                </mxCell>
+                <mxCell id="xV7fb2XxJwwbNg-pTNaK-3" edge="1" parent="1" source="WBrz2skgG_IkBZL04oJl-5" style="edgeStyle=none;html=1;" target="xV7fb2XxJwwbNg-pTNaK-2" value="">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="WBrz2skgG_IkBZL04oJl-5" parent="1" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" value="readObject() called without filtering" vertex="1">
+                    <mxGeometry height="120" width="160" x="350" y="620" as="geometry"/>
+                </mxCell>
+                <mxCell id="WBrz2skgG_IkBZL04oJl-7" parent="1" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.terminator;whiteSpace=wrap;" value="&lt;div&gt;&lt;span&gt;Gadget Chain executes during reconstruction&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: rgb(63, 63, 63); background-color: transparent;&quot;&gt;(Confidentiality, Integrity and Availability breach: Arbritary command execution)&lt;/span&gt;&lt;/div&gt;" vertex="1">
+                    <mxGeometry height="160" width="200" x="330" y="940" as="geometry"/>
+                </mxCell>
+                <mxCell id="WBrz2skgG_IkBZL04oJl-10" edge="1" parent="1" source="WBrz2skgG_IkBZL04oJl-11" style="edgeStyle=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="WBrz2skgG_IkBZL04oJl-5">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="WBrz2skgG_IkBZL04oJl-11" parent="1" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" value="ObjectInputStream created" vertex="1">
+                    <mxGeometry height="120" width="160" x="350" y="460" as="geometry"/>
+                </mxCell>
+                <mxCell id="WBrz2skgG_IkBZL04oJl-12" parent="1" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.annotation_2;align=left;labelPosition=right;pointerEvents=1;" value="" vertex="1">
+                    <mxGeometry height="300" width="50" x="259" y="450" as="geometry"/>
+                </mxCell>
+                <mxCell id="WBrz2skgG_IkBZL04oJl-13" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="Logical flaw: Without a filter in place, user created objects are implicitly trusted by the program." vertex="1">
+                    <mxGeometry height="160" width="120" x="120" y="520" as="geometry"/>
+                </mxCell>
+                <mxCell id="xV7fb2XxJwwbNg-pTNaK-5" edge="1" parent="1" source="xV7fb2XxJwwbNg-pTNaK-2" style="edgeStyle=none;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" target="WBrz2skgG_IkBZL04oJl-7" value="">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="430" y="940" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="xV7fb2XxJwwbNg-pTNaK-2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" value="Object Graph reconstructed" vertex="1">
+                    <mxGeometry height="120" width="160" x="350" y="780" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+    <diagram id="No-aO0dR9Oy_NgnS9DFt" name="Fixed Implementation Flow">
+        <mxGraphModel dx="1346" dy="1198" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="light-dark(#ffffff, #121212)" math="0" shadow="0">
+            <root>
+                <mxCell id="J0-yCFp5y-7XKTkabsxN-0"/>
+                <mxCell id="J0-yCFp5y-7XKTkabsxN-1" parent="J0-yCFp5y-7XKTkabsxN-0"/>
+                <mxCell id="U6oYPqH5gSfglTxNZeIQ-0" edge="1" parent="J0-yCFp5y-7XKTkabsxN-1" source="U6oYPqH5gSfglTxNZeIQ-1" style="edgeStyle=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="U6oYPqH5gSfglTxNZeIQ-3">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="U6oYPqH5gSfglTxNZeIQ-1" parent="J0-yCFp5y-7XKTkabsxN-1" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.start_1;whiteSpace=wrap;" value="Application loads session" vertex="1">
+                    <mxGeometry height="120" width="160" x="360" y="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="U6oYPqH5gSfglTxNZeIQ-2" edge="1" parent="J0-yCFp5y-7XKTkabsxN-1" source="U6oYPqH5gSfglTxNZeIQ-3" style="edgeStyle=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="U6oYPqH5gSfglTxNZeIQ-8">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="U6oYPqH5gSfglTxNZeIQ-3" parent="J0-yCFp5y-7XKTkabsxN-1" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" value="Session file located" vertex="1">
+                    <mxGeometry height="120" width="160" x="360" y="240" as="geometry"/>
+                </mxCell>
+                <mxCell id="U6oYPqH5gSfglTxNZeIQ-8" parent="J0-yCFp5y-7XKTkabsxN-1" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" value="ObjectInputStream created" vertex="1">
+                    <mxGeometry height="120" width="160" x="360" y="400" as="geometry"/>
+                </mxCell>
+                <mxCell id="c-YXCFSNy2zUGeqOQauk-0" edge="1" parent="J0-yCFp5y-7XKTkabsxN-1" source="c-YXCFSNy2zUGeqOQauk-4" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="c-YXCFSNy2zUGeqOQauk-6">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c-YXCFSNy2zUGeqOQauk-1" connectable="0" parent="c-YXCFSNy2zUGeqOQauk-0" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="No" vertex="1">
+                    <mxGeometry relative="1" x="-0.1607" y="-4" as="geometry">
+                        <mxPoint x="4" y="36" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="c-YXCFSNy2zUGeqOQauk-2" edge="1" parent="J0-yCFp5y-7XKTkabsxN-1" source="c-YXCFSNy2zUGeqOQauk-4" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="c-YXCFSNy2zUGeqOQauk-5">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c-YXCFSNy2zUGeqOQauk-3" connectable="0" parent="c-YXCFSNy2zUGeqOQauk-2" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="Yes" vertex="1">
+                    <mxGeometry relative="1" x="0.1138" y="3" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="c-YXCFSNy2zUGeqOQauk-4" parent="J0-yCFp5y-7XKTkabsxN-1" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.decision;whiteSpace=wrap;" value="JEP-290 Class Filter&lt;div&gt;(Is the class permitted)&lt;/div&gt;" vertex="1">
+                    <mxGeometry height="200" width="200" x="340" y="560" as="geometry"/>
+                </mxCell>
+                <mxCell id="c-YXCFSNy2zUGeqOQauk-5" parent="J0-yCFp5y-7XKTkabsxN-1" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" value="Object reconstructed" vertex="1">
+                    <mxGeometry height="120" width="160" x="200" y="800" as="geometry"/>
+                </mxCell>
+                <mxCell id="c-YXCFSNy2zUGeqOQauk-6" parent="J0-yCFp5y-7XKTkabsxN-1" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" value="Class rejected" vertex="1">
+                    <mxGeometry height="120" width="160" x="520" y="800" as="geometry"/>
+                </mxCell>
+                <mxCell id="c-YXCFSNy2zUGeqOQauk-7" parent="J0-yCFp5y-7XKTkabsxN-1" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.terminator;whiteSpace=wrap;" value="Deserealisation aborted" vertex="1">
+                    <mxGeometry height="120" width="160" x="520" y="960" as="geometry"/>
+                </mxCell>
+                <mxCell id="c-YXCFSNy2zUGeqOQauk-9" parent="J0-yCFp5y-7XKTkabsxN-1" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.terminator;whiteSpace=wrap;" value="Session object returned" vertex="1">
+                    <mxGeometry height="120" width="160" x="200" y="960" as="geometry"/>
+                </mxCell>
+                <mxCell id="wD01oYd4NRM4Ue_eSE95-0" edge="1" parent="J0-yCFp5y-7XKTkabsxN-1" source="U6oYPqH5gSfglTxNZeIQ-8" style="edgeStyle=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" target="c-YXCFSNy2zUGeqOQauk-4">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="wD01oYd4NRM4Ue_eSE95-1" edge="1" parent="J0-yCFp5y-7XKTkabsxN-1" source="c-YXCFSNy2zUGeqOQauk-6" style="edgeStyle=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" target="c-YXCFSNy2zUGeqOQauk-7">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="wD01oYd4NRM4Ue_eSE95-2" edge="1" parent="J0-yCFp5y-7XKTkabsxN-1" source="c-YXCFSNy2zUGeqOQauk-5" style="edgeStyle=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" target="c-YXCFSNy2zUGeqOQauk-9">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
