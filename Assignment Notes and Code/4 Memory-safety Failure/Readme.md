@@ -128,9 +128,14 @@ or
 
 ```bash
 make test
+make compare # To compare the improved fix to the regular fix.
 ```
 
 The make file can also `clean` or `create`.
+
+---
+
+
 
 # References
 
