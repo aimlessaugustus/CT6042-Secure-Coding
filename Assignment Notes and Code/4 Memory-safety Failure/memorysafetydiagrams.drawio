@@ -50,14 +50,14 @@
         </mxGraphModel>
     </diagram>
     <diagram id="THnq7atg996BdtKDjoqd" name="Fixed Implementation">
-        <mxGraphModel dx="897" dy="1131" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+        <mxGraphModel dx="810" dy="547" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
             <root>
                 <mxCell id="51nULOKsbjNE-MM159Wz-0"/>
                 <mxCell id="51nULOKsbjNE-MM159Wz-1" parent="51nULOKsbjNE-MM159Wz-0"/>
                 <mxCell id="ykgh04IuF77mSEkWR7WY-0" parent="51nULOKsbjNE-MM159Wz-1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;" value="Rewrite replacement contains &#39;?&#39;&#xa;sets is_args = 1" vertex="1">
                     <mxGeometry height="50" width="250" x="240" y="140" as="geometry"/>
                 </mxCell>
-                <mxCell id="ykgh04IuF77mSEkWR7WY-1" parent="51nULOKsbjNE-MM159Wz-1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;fontStyle=1;" value="regex_end clears is_args = 0&#xa;(the one-line fix, commit 524977e)" vertex="1">
+                <mxCell id="ykgh04IuF77mSEkWR7WY-1" parent="51nULOKsbjNE-MM159Wz-1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;fontStyle=1;" value="&lt;span style=&quot;font-weight: normal;&quot;&gt;regex_end clears is_args = 0&lt;br&gt;&lt;/span&gt;" vertex="1">
                     <mxGeometry height="50" width="280" x="225" y="230" as="geometry"/>
                 </mxCell>
                 <mxCell id="ykgh04IuF77mSEkWR7WY-2" parent="51nULOKsbjNE-MM159Wz-1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;" value="Capture of N escapable bytes&#xa;(from &#39;+&#39; padding)" vertex="1">
