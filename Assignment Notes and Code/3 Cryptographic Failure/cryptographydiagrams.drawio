@@ -1,25 +1,38 @@
 <mxfile host="65bd71144e">
-    <diagram id="OVMggegndIsi5MFN3ovI" name="Flow Diagram">
-        <mxGraphModel dx="1030" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <diagram id="OVMggegndIsi5MFN3ovI" name="AES-ECB Encryption">
+        <mxGraphModel dx="778" dy="693" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
-                <mxCell id="WnP260ux_V-QTtdzd7To-1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;roundedPerimeter=1;" value="User/Controller calls command to encrypt image" vertex="1">
-                    <mxGeometry height="80" width="120" x="240" y="80" as="geometry"/>
-                </mxCell>
-                <mxCell id="WnP260ux_V-QTtdzd7To-2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;roundedPerimeter=1;" value="User/Controller calls command to encrypt image" vertex="1">
-                    <mxGeometry height="80" width="120" x="120" y="240" as="geometry"/>
+                <mxCell id="TFc9LL2PhlkSUrxzwi_b-1" parent="1" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.start_1;whiteSpace=wrap;" value="Image requires encrypting for storage" vertex="1">
+                    <mxGeometry height="120" width="160" x="320" y="80" as="geometry"/>
                 </mxCell>
             </root>
         </mxGraphModel>
     </diagram>
+    <diagram id="GsB0GbFPoU5vP4QJRPow" name="AES-CBC Encryption">
+        <mxGraphModel dx="646" dy="575" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+            <root>
+                <mxCell id="r8QCmW-DAEgUAzqIFJeD-0"/>
+                <mxCell id="r8QCmW-DAEgUAzqIFJeD-1" parent="r8QCmW-DAEgUAzqIFJeD-0"/>
+            </root>
+        </mxGraphModel>
+    </diagram>
+    <diagram id="0EfI1BBrJsymP-JxPta2" name="AES-GCM Encryption">
+        <mxGraphModel dx="646" dy="575" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+            <root>
+                <mxCell id="coQ4tDi0hKZb1TG4YOxn-0"/>
+                <mxCell id="coQ4tDi0hKZb1TG4YOxn-1" parent="coQ4tDi0hKZb1TG4YOxn-0"/>
+            </root>
+        </mxGraphModel>
+    </diagram>
     <diagram id="ap2D0SJBOk-8FYVW1JVw" name="Image Comparison">
-        <mxGraphModel dx="1030" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+        <mxGraphModel dx="726" dy="646" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
             <root>
                 <mxCell id="FMHGpIgsfGC4cY-IhwvR-0"/>
                 <mxCell id="FMHGpIgsfGC4cY-IhwvR-1" parent="FMHGpIgsfGC4cY-IhwvR-0"/>
                 <mxCell id="uwa2JH8wJOEzz0B8ibcA-10" connectable="0" parent="FMHGpIgsfGC4cY-IhwvR-1" style="group" value="" vertex="1">
-                    <mxGeometry height="600" width="600" y="80" as="geometry"/>
+                    <mxGeometry height="600" width="600" x="60" y="350" as="geometry"/>
                 </mxCell>
                 <mxCell id="uwa2JH8wJOEzz0B8ibcA-9" parent="uwa2JH8wJOEzz0B8ibcA-10" style="whiteSpace=wrap;html=1;aspect=fixed;" value="" vertex="1">
                     <mxGeometry height="600" width="600" as="geometry"/>
