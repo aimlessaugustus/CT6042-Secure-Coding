@@ -1,17 +1,107 @@
 <mxfile host="65bd71144e">
     <diagram id="W2MaRSwrsJOzdVBK1w-q" name="Vulnerable Implementation">
-        <mxGraphModel dx="646" dy="575" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="light-dark(#ffffff, #121212)" math="0" shadow="0">
+        <mxGraphModel dx="1171" dy="790" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="light-dark(#ffffff, #121212)" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
+                <mxCell id="ajOg9v24RIFIkxJdH7-s-2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;" value="Rewrite replacement contains &#39;?&#39;&#xa;sets is_args = 1" vertex="1">
+                    <mxGeometry height="50" width="250" x="210" y="280" as="geometry"/>
+                </mxCell>
+                <mxCell id="ajOg9v24RIFIkxJdH7-s-3" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;" value="Capture of N escapable bytes&#xa;(from &#39;+&#39; padding)" vertex="1">
+                    <mxGeometry height="50" width="230" x="220" y="370" as="geometry"/>
+                </mxCell>
+                <mxCell id="ajOg9v24RIFIkxJdH7-s-4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;" value="Length pass&#xa;sub-engine, is_args = 0" vertex="1">
+                    <mxGeometry height="55" width="210" x="80" y="480" as="geometry"/>
+                </mxCell>
+                <mxCell id="ajOg9v24RIFIkxJdH7-s-5" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;" value="Copy pass&#xa;main engine, is_args = 1" vertex="1">
+                    <mxGeometry height="55" width="210" x="380" y="480" as="geometry"/>
+                </mxCell>
+                <mxCell id="ajOg9v24RIFIkxJdH7-s-6" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;" value="sizes buffer at N bytes" vertex="1">
+                    <mxGeometry height="40" width="210" x="80" y="585" as="geometry"/>
+                </mxCell>
+                <mxCell id="ajOg9v24RIFIkxJdH7-s-7" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;" value="writes 3N bytes" vertex="1">
+                    <mxGeometry height="40" width="210" x="380" y="585" as="geometry"/>
+                </mxCell>
+                <mxCell id="ajOg9v24RIFIkxJdH7-s-8" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;fontStyle=1;" value="&lt;span style=&quot;font-weight: normal;&quot;&gt;Heap overflow&lt;br&gt;3N bytes into an N-byte buffer&lt;/span&gt;" vertex="1">
+                    <mxGeometry height="60" width="240" x="215" y="690" as="geometry"/>
+                </mxCell>
+                <mxCell id="ajOg9v24RIFIkxJdH7-s-9" edge="1" parent="1" source="ajOg9v24RIFIkxJdH7-s-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" target="ajOg9v24RIFIkxJdH7-s-3">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="ajOg9v24RIFIkxJdH7-s-10" edge="1" parent="1" source="ajOg9v24RIFIkxJdH7-s-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" target="ajOg9v24RIFIkxJdH7-s-4">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="ajOg9v24RIFIkxJdH7-s-11" edge="1" parent="1" source="ajOg9v24RIFIkxJdH7-s-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" target="ajOg9v24RIFIkxJdH7-s-5">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="ajOg9v24RIFIkxJdH7-s-12" edge="1" parent="1" source="ajOg9v24RIFIkxJdH7-s-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;fontSize=11;" target="ajOg9v24RIFIkxJdH7-s-6" value="not escaped">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="ajOg9v24RIFIkxJdH7-s-13" edge="1" parent="1" source="ajOg9v24RIFIkxJdH7-s-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;fontSize=11;" target="ajOg9v24RIFIkxJdH7-s-7" value="escaped: 1 byte to 3">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="ajOg9v24RIFIkxJdH7-s-14" edge="1" parent="1" source="ajOg9v24RIFIkxJdH7-s-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" target="ajOg9v24RIFIkxJdH7-s-8">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="ajOg9v24RIFIkxJdH7-s-15" edge="1" parent="1" source="ajOg9v24RIFIkxJdH7-s-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" target="ajOg9v24RIFIkxJdH7-s-8">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
             </root>
         </mxGraphModel>
     </diagram>
     <diagram id="THnq7atg996BdtKDjoqd" name="Fixed Implementation">
-        <mxGraphModel dx="646" dy="575" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+        <mxGraphModel dx="897" dy="1131" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
             <root>
                 <mxCell id="51nULOKsbjNE-MM159Wz-0"/>
                 <mxCell id="51nULOKsbjNE-MM159Wz-1" parent="51nULOKsbjNE-MM159Wz-0"/>
+                <mxCell id="ykgh04IuF77mSEkWR7WY-0" parent="51nULOKsbjNE-MM159Wz-1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;" value="Rewrite replacement contains &#39;?&#39;&#xa;sets is_args = 1" vertex="1">
+                    <mxGeometry height="50" width="250" x="240" y="140" as="geometry"/>
+                </mxCell>
+                <mxCell id="ykgh04IuF77mSEkWR7WY-1" parent="51nULOKsbjNE-MM159Wz-1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;fontStyle=1;" value="regex_end clears is_args = 0&#xa;(the one-line fix, commit 524977e)" vertex="1">
+                    <mxGeometry height="50" width="280" x="225" y="230" as="geometry"/>
+                </mxCell>
+                <mxCell id="ykgh04IuF77mSEkWR7WY-2" parent="51nULOKsbjNE-MM159Wz-1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;" value="Capture of N escapable bytes&#xa;(from &#39;+&#39; padding)" vertex="1">
+                    <mxGeometry height="50" width="230" x="250" y="320" as="geometry"/>
+                </mxCell>
+                <mxCell id="ykgh04IuF77mSEkWR7WY-3" parent="51nULOKsbjNE-MM159Wz-1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;" value="Length pass&#xa;sub-engine, is_args = 0" vertex="1">
+                    <mxGeometry height="55" width="210" x="110" y="430" as="geometry"/>
+                </mxCell>
+                <mxCell id="ykgh04IuF77mSEkWR7WY-4" parent="51nULOKsbjNE-MM159Wz-1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;" value="Copy pass&#xa;main engine, is_args = 0" vertex="1">
+                    <mxGeometry height="55" width="210" x="410" y="430" as="geometry"/>
+                </mxCell>
+                <mxCell id="ykgh04IuF77mSEkWR7WY-5" parent="51nULOKsbjNE-MM159Wz-1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;" value="sizes buffer at N bytes" vertex="1">
+                    <mxGeometry height="40" width="210" x="110" y="535" as="geometry"/>
+                </mxCell>
+                <mxCell id="ykgh04IuF77mSEkWR7WY-6" parent="51nULOKsbjNE-MM159Wz-1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;" value="writes N bytes" vertex="1">
+                    <mxGeometry height="40" width="210" x="410" y="535" as="geometry"/>
+                </mxCell>
+                <mxCell id="ykgh04IuF77mSEkWR7WY-7" parent="51nULOKsbjNE-MM159Wz-1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;fontStyle=1;" value="&lt;span style=&quot;font-weight: normal;&quot;&gt;Sizes agree&lt;br&gt;N bytes into an N-byte buffer&lt;/span&gt;" vertex="1">
+                    <mxGeometry height="60" width="240" x="245" y="640" as="geometry"/>
+                </mxCell>
+                <mxCell id="ykgh04IuF77mSEkWR7WY-8" edge="1" parent="51nULOKsbjNE-MM159Wz-1" source="ykgh04IuF77mSEkWR7WY-0" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" target="ykgh04IuF77mSEkWR7WY-1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="ykgh04IuF77mSEkWR7WY-9" edge="1" parent="51nULOKsbjNE-MM159Wz-1" source="ykgh04IuF77mSEkWR7WY-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" target="ykgh04IuF77mSEkWR7WY-2">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="ykgh04IuF77mSEkWR7WY-10" edge="1" parent="51nULOKsbjNE-MM159Wz-1" source="ykgh04IuF77mSEkWR7WY-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" target="ykgh04IuF77mSEkWR7WY-3">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="ykgh04IuF77mSEkWR7WY-11" edge="1" parent="51nULOKsbjNE-MM159Wz-1" source="ykgh04IuF77mSEkWR7WY-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" target="ykgh04IuF77mSEkWR7WY-4">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="ykgh04IuF77mSEkWR7WY-12" edge="1" parent="51nULOKsbjNE-MM159Wz-1" source="ykgh04IuF77mSEkWR7WY-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;fontSize=11;" target="ykgh04IuF77mSEkWR7WY-5" value="not escaped">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="ykgh04IuF77mSEkWR7WY-13" edge="1" parent="51nULOKsbjNE-MM159Wz-1" source="ykgh04IuF77mSEkWR7WY-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;fontSize=11;" target="ykgh04IuF77mSEkWR7WY-6" value="not escaped">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="ykgh04IuF77mSEkWR7WY-14" edge="1" parent="51nULOKsbjNE-MM159Wz-1" source="ykgh04IuF77mSEkWR7WY-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" target="ykgh04IuF77mSEkWR7WY-7">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="ykgh04IuF77mSEkWR7WY-15" edge="1" parent="51nULOKsbjNE-MM159Wz-1" source="ykgh04IuF77mSEkWR7WY-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" target="ykgh04IuF77mSEkWR7WY-7">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
             </root>
         </mxGraphModel>
     </diagram>
