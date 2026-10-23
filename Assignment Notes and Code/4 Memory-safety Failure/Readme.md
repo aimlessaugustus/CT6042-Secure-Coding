@@ -129,13 +129,15 @@ or
 ```bash
 make test
 make compare # To compare the improved fix to the regular fix.
+make compare-compact # To compare the three fixes in a more readable manner.
 ```
 
 The make file can also `clean` or `create`.
 
+![alt text](Images/comparison.png)
+*Figure: Comparison of the vulnerable, fixed and improved solutions*
+
 ---
-
-
 
 # References
 

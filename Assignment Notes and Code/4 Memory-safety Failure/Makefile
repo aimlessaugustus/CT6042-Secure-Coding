@@ -13,7 +13,7 @@ CFLAGS   = -O0 -g
 ASAN     = -fsanitize=address
 ASANOPTS = ASAN_OPTIONS=detect_leaks=0
 
-.PHONY: all test compare clean
+.PHONY: all test compare compare-compact clean
 
 all: rift_vuln rift_fixed rift_improved \
      rift_vuln_asan rift_fixed_asan rift_improved_asan \
@@ -61,6 +61,9 @@ compare: rift_improved_asan rift_fixed_regressed_asan
 	-$(ASANOPTS) ./rift_fixed_regressed_asan '++++++++'
 	@echo "-- rift_improved + same desync, bounded copy (expect fail-closed) --"
 	-$(ASANOPTS) ./rift_improved_asan '++++++++' upstream
+
+compare-compact: rift_vuln_asan rift_fixed_asan rift_improved_asan rift_fixed_regressed_asan
+	@sh compare_compact.sh
 
 clean:
 	rm -f rift_vuln rift_fixed rift_improved \
