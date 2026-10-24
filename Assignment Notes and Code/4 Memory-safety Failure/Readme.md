@@ -49,7 +49,7 @@ static void copy_capture(script_engine_t *e,
 
 Three techniques were applied. Static analysis came first: GCC's `-fanalyzer` and the Clang Static Analyzer both ran without detecting errors. This is expected rather than reassuring, because the undersizing and the overrun sit in different functions, gated by state set in a third, which local pattern-matching does not model (Figure P). Runtime instrumentation then exposed it. AddressSanitizer reported a heap-buffer-overflow write in `copy_capture`, one byte past an 8-byte allocation it traced to the length pass (Figure Q). A random fuzzer corroborated this, reaching the same crash within two inputs once one contained a plus sign (Figure R).
 
-![alt text](Images/memoryoverflowsastfail.png)
+![alt text](Images/memoryoverflowsastfailcorrected.png)
 *Figure Q: -fanalyzer and Clang failing to detect the budder overflow error*
 
 ![alt text](Images/addresssanitisercapturesinput.png)
@@ -96,13 +96,40 @@ gcc rift_vuln.c -o rift_vuln
 ./rift_vuln
 ```
 
-## To identify the vulnerability in the file
+## To identify the vulnerability/retest in the filea
 
-SAST:
+SAST tooling:
+
+Can be run on the other two to detect residual errors, but at the core, it does not detect the overflow risk.
 
 ```bash
-gcc -fanalyzer -O2 -c rift_vuln.c -o /dev/null   
-clang --analyze rift_vuln.c                       
+# GCC SAST
+gcc -fanalyzer -Wall -Wextra -c rift_vuln.c 2> rift_vuln_gcc_report.txt
+scan-build gcc -Wall rift_vuln.c -o rift_vuln
+
+# Clang SAST
+clang --analyze -Wall -Wextra rift_vuln.c 2> rift_vuln_clang_report.txt
+scan-build clang -Wall rift_vuln.c -o rift_vuln
+```
+
+```bash
+# GCC SAST
+gcc -fanalyzer -Wall -Wextra -c rift_fixed.c 2> rift_fixed_gcc_report.txt
+scan-build gcc -Wall rift_fixed.c -o rift_fixed
+
+# Clang SAST
+clang --analyze -Wall -Wextra rift_fixed.c 2> rift_fixed_clang_report.txt
+scan-build clang -Wall rift_fixed.c -o rift_fixed
+```
+
+```bash
+# GCC SAST
+gcc -fanalyzer -Wall -Wextra -c rift_improved.c 2> rift_improved_gcc_report.txt
+scan-build gcc -Wall rift_improved.c -o rift_improved
+
+# Clang SAST
+clang --analyze -Wall -Wextra rift_improved.c 2> rift_improved_clang_report.txt
+scan-build clang -Wall rift_improved.c -o rift_improved
 ```
 
 Fuzzers:
