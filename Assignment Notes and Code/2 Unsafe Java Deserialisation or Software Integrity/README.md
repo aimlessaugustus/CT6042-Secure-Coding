@@ -24,7 +24,7 @@ The minimal sink is a single unfiltered readObject() on a session file (Listing~
 
 ## Identifying the Vulnerability Using Techniques and Tools
 
-DRAFT!
+*Assignment Section draft*
 
 Three complementary techniques identified the flaw. Software composition analysis using OSV-Scanner flagged commons-collections 3.1 as carrying the InvokerTransformer gadget chain, reporting the CVE-2015-7501 advisory. Static review alone would miss because the application never imports the library directly. \parencite{OSVScanner2024}. Static analysis with Semgrep's Java ruleset independently raised an unsafe-deserialisation finding on `VulnerableSessionStore.load()`, locating the unfiltered `readObject()` sink (Figure~X) \parencite{Semgrep2024}. The two findings were then confirmed dynamically through the ysoserial `CommonsCollections6` payload executing during deserialisation and created `/tmp/pwned`, proving the warnings were exploitable rather than theoretical (Figure~X).
 
@@ -74,7 +74,7 @@ The ysoserial payload was rejected by the filter, preventing execution on the VM
   `--add-opens` flags, and is less predictable.
 - Maven 3.8+
 - Internet access on first build (to fetch `commons-collections:3.1` and ysoserial)
-- A disposable Linux VM/container (used 24.4.04)
+- A disposable Linux VM/container (used Ubuntu 24.4.04 LTS)
 
 ---
 

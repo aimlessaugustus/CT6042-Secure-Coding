@@ -7,7 +7,6 @@ import java.io.Serializable;
  * servlet container may legitimately serialise and store within an HTTP
  * session.
  *
- * <p>
  * This class is not involved in the vulnerability itself. It exists solely as a
  * normal baseline example, highlighting that insecure deserialisation arises
  * from processing attacker-controlled object graphs rather than from the

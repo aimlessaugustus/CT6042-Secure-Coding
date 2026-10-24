@@ -12,13 +12,10 @@ import java.nio.file.Path;
  * ObjectInputStream.readObject() without class filtering, reproducing the
  * behaviour present in vulnerable Tomcat configurations.
  *
- * <p>
  * The implementation also retains the path traversal condition that allowed
  * attacker-controlled session IDs to reference files outside the intended
  * storage directory.
  *
- * <p>
- * For educational use only. Do not use in production systems.
  */
 public class VulnerableSessionStore {
 
@@ -34,7 +31,7 @@ public class VulnerableSessionStore {
      * resolving a session file and passing it directly to
      * {@code ObjectInputStream.readObject()} without any class filtering.
      *
-     * @param sessionId attacker-influenced session identifier; path traversal
+     * @param sessionId attacker-influenced session identifier. Path traversal
      * sequences such as {@code ../} can escape the configured storage directory
      * @return the deserialised object
      */

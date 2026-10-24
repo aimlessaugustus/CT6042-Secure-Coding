@@ -13,8 +13,8 @@
     <description>
         Remediated version of the Apache Tomcat session deserialisation lab.
         The unfiltered sink and the vulnerable commons-collections dependency
-        have both been removed; deserialisation is constrained by a JEP 290
-        allow-list filter. For educational use only.
+        have both been removed. The deserialisation is constrained by a JEP 290
+        allow-list filter to stop malicious classes from being used.
     </description>
 
     <properties>
@@ -24,10 +24,9 @@
 
     <!--
         The vulnerable commons-collections 3.1 dependency (CVE-2015-7501) has been
-        removed entirely. The application never referenced it; its presence was
-        what supplied the gadget chain, so dropping it closes the composition-level
-        finding that SCA reports, independently of the JEP 290 filter in the code.
-        There are now no third-party dependencies.
+        removed entirely. This
+        dependency was what supplied the gadget chain, so dropping it closed the
+        composition-level SCA findings.
     -->
 
     <build>

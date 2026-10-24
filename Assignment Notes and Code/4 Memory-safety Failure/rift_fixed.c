@@ -1,7 +1,6 @@
 /* rift_fixed.c -- the mitigated two-pass build.
  *
- * Applies the upstream fix for CVE-2026-42945. Nginx commit 524977e,
- * "Rewrite: fixed escaping and possible buffer overrun", adds a single line to
+ * Applies the upstream fix for CVE-2026-42945 by adding a single line to
  * ngx_http_script_regex_end_code that clears the is_args flag at the end of
  * rewrite handling. A following set or if capture then sees is_args == 0, so
  * the length pass and the copy pass agree and no overflow occurs.

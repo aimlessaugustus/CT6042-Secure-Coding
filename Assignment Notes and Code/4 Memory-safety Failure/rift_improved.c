@@ -2,16 +2,17 @@
  *
  * The upstream patch (commit 524977e) clears is_args at regex end, beside an
  * existing quote reset. It is correct, but keeps the fragile pattern that
- * caused the bug: escape flags are reset one at a time, so a newly added flag
- * can be forgotten, exactly as is_args was for 18 years. This version makes
+ * caused the bug. Escape flags are reset one at a time, so a newly added flag
+ * can be forgotten. This version makes
  * two improvements.
  *
  *   1. A single reset_escape_state clears every escape flag in one place, so
  *      the class of omission cannot recur.
+ * 
  *   2. The copy pass is bounds-checked against the allocation, so any residual
  *      length/copy desync fails closed at the boundary instead of overflowing.
  *
- * Build the two modes to contrast them:
+ * To contrast the two fixes, run the following commands:
  *   ./rift_improved '++++++++' structural   -- our fix, all flags cleared
  *   ./rift_improved '++++++++' upstream      -- models a point-fix that resets
  *                                               is_args but forgets quote

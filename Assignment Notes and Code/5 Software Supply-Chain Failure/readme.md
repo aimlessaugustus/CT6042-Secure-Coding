@@ -9,7 +9,7 @@ Three terminals are used during testing, detailed here. All terminals are used o
 | Terminal                 | Role                                                                |
 | ------------------------ | ------------------------------------------------------------------- |
 | **Terminal 1 — Control** | setup, Docker, recon, scanning, firing payloads, mitigation, retest |
-| **Terminal 2 — Server**  | netcat listener (3a), then the JNDI-Exploit-Kit (3b, retest)        |
+| **Terminal 2 — Server**  | netcat listener, then the JNDI-Exploit-Kit        |
 
 **Assume commands to be on Terminal 1 unless explicitly stated otherwise.**
 
