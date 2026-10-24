@@ -1,4 +1,4 @@
-# SDLC and SSDLC Notes
+# SDLC and SSDLC Notes + Product Risk Assessment Notes
 
 These are the raw notes on the Software Development Lifecycle/Secure Software Development Lifecycle (SDLC/SSDLC) that I will process into a section of the assignment.
 
