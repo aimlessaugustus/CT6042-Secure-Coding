@@ -6,6 +6,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: OSV scan (fails the build on any finding)
-        uses: google/osv-scanner-action@v2     # pin to the current release tag
+        uses: google/osv-scanner-action
         with:
           scan-args: "--recursive ./"

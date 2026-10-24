@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram id="AtPIgGalABai3sf17EXV" name="Flow Diagram of where things go wrong">
-        <mxGraphModel dx="1077" dy="958" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+        <mxGraphModel dx="694" dy="951" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -83,7 +83,7 @@
         </mxGraphModel>
     </diagram>
     <diagram id="gcBmu8ibLqnKBqPoV_WT" name="Supply Chain Vulnerability Flow Diagram">
-        <mxGraphModel dx="646" dy="1744" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="light-dark(#ffffff, #121212)" math="0" shadow="0">
+        <mxGraphModel dx="515" dy="1874" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="light-dark(#ffffff, #121212)" math="0" shadow="0">
             <root>
                 <mxCell id="aisRa2fLwmszTjcj4r4d-0"/>
                 <mxCell id="aisRa2fLwmszTjcj4r4d-1" parent="aisRa2fLwmszTjcj4r4d-0"/>
@@ -130,7 +130,7 @@
         </mxGraphModel>
     </diagram>
     <diagram id="hHItAgzDxSBPRn6nGYbj" name="Mitigated Supply Chain Flow">
-        <mxGraphModel dx="1292" dy="1150" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="light-dark(#ffffff, #121212)" math="0" shadow="0">
+        <mxGraphModel dx="840" dy="1151" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="light-dark(#ffffff, #121212)" math="0" shadow="0">
             <root>
                 <mxCell id="FOW54eWK1y28Cox-jWLw-0"/>
                 <mxCell id="FOW54eWK1y28Cox-jWLw-1" parent="FOW54eWK1y28Cox-jWLw-0"/>

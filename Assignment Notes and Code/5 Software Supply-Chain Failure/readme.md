@@ -1,5 +1,8 @@
 # Software Supply-Chain Dependency
 
+For simplicity and ease of setup, the vulnhub docker container is used for Solr: https://hub.docker.com/r/vulhub/solr
+
+
 ## Running the Lab
 
 This setup assumes a freshly installed Kali Linux VM. By following the installation instructions the artifacts from the report can be independently verified.
