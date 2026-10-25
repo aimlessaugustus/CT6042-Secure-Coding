@@ -186,12 +186,10 @@ To scan with semgrep, run:
 semgrep scan
 ```
 
-To scan with the OSV
-
-### install (Go binary; one of these will suit your VM)
-
-sudo snap install osv-scanner
+To scan with OSV-Scanner
 
 ### run from the lab root
 
+```bash
 osv-scanner --lockfile=pom.xml .
+```
