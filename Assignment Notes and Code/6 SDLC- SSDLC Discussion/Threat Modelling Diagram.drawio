@@ -1,0 +1,60 @@
+<mxfile host="65bd71144e">
+    <diagram id="dfd-appendix-e" name="Appendix E DFD">
+        <mxGraphModel dx="1061" dy="1339" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="700" background="light-dark(#ffffff, #121212)" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="tb1" parent="1" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;dashPattern=8 6;strokeColor=#C0392B;fillColor=none;verticalAlign=top;fontColor=#C0392B;fontStyle=2;fontSize=11;align=left;spacingLeft=6;" value="TB1  Internet / Perimeter" vertex="1">
+                    <mxGeometry height="520" width="230" x="40" y="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="tb2" parent="1" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;dashPattern=8 6;strokeColor=#C0392B;fillColor=none;verticalAlign=top;fontColor=#C0392B;fontStyle=2;fontSize=11;align=left;spacingLeft=6;" value="TB2  Application tier" vertex="1">
+                    <mxGeometry height="520" width="420" x="280" y="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="tb3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;dashPattern=8 6;strokeColor=#C0392B;fillColor=none;verticalAlign=top;fontColor=#C0392B;fontStyle=2;fontSize=11;align=left;spacingLeft=6;" value="TB3  Data + dependency tier" vertex="1">
+                    <mxGeometry height="520" width="350" x="710" y="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="tbtenant" parent="1" style="rounded=1;whiteSpace=wrap;html=1;dashed=1;dashPattern=3 4;strokeColor=#C0392B;fillColor=none;verticalAlign=top;fontColor=#C0392B;fontStyle=2;fontSize=10;align=center;" value="Tenant isolation (logical)" vertex="1">
+                    <mxGeometry height="160" width="200" x="420" y="250" as="geometry"/>
+                </mxCell>
+                <mxCell id="actor" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#EEF3F8;strokeColor=#2C3E50;fontColor=#2C3E50;fontSize=12;" value="External&#xa;tenant user" vertex="1">
+                    <mxGeometry height="100" width="120" x="70" y="290" as="geometry"/>
+                </mxCell>
+                <mxCell id="nginx" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F7F4EC;strokeColor=#2C3E50;fontColor=#2C3E50;fontSize=12;" value="NGINX&#xa;reverse proxy" vertex="1">
+                    <mxGeometry height="80" width="90" x="300" y="300" as="geometry"/>
+                </mxCell>
+                <mxCell id="api" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F7F4EC;strokeColor=#2C3E50;fontColor=#2C3E50;fontSize=12;strokeWidth=2;" value="Spring Boot&#xa;invoice API" vertex="1">
+                    <mxGeometry height="80" width="140" x="450" y="300" as="geometry"/>
+                </mxCell>
+                <mxCell id="tomcat" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=14;fillColor=#EEF3F8;strokeColor=#2C3E50;fontColor=#2C3E50;fontSize=12;" value="Tomcat&#xa;session store" vertex="1">
+                    <mxGeometry height="80" width="110" x="470" y="130" as="geometry"/>
+                </mxCell>
+                <mxCell id="solr" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EEF3F8;strokeColor=#2C3E50;fontColor=#2C3E50;fontSize=12;" value="Apache Solr&#xa;8.11.0 index" vertex="1">
+                    <mxGeometry height="80" width="130" x="770" y="300" as="geometry"/>
+                </mxCell>
+                <mxCell id="storage" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=14;fillColor=#EEF3F8;strokeColor=#2C3E50;fontColor=#2C3E50;fontSize=12;" value="AES document&#xa;storage" vertex="1">
+                    <mxGeometry height="90" width="110" x="780" y="450" as="geometry"/>
+                </mxCell>
+                <mxCell id="f1" edge="1" parent="1" source="actor" style="endArrow=classic;html=1;strokeColor=#333333;fontColor=#555555;fontSize=10;" target="nginx" value="HTTPS request">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="f2" edge="1" parent="1" source="nginx" style="endArrow=classic;html=1;strokeColor=#333333;fontColor=#555555;fontSize=10;" target="api" value="forward">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="f3" edge="1" parent="1" source="api" style="endArrow=classic;html=1;strokeColor=#333333;fontColor=#555555;fontSize=10;" target="tomcat" value="persist session">
+                    <mxGeometry relative="1" x="0.3347" y="-2" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="f4" edge="1" parent="1" source="api" style="endArrow=classic;html=1;strokeColor=#333333;fontColor=#555555;fontSize=10;" target="solr" value="query index">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="f5" edge="1" parent="1" source="api" style="endArrow=classic;html=1;strokeColor=#333333;fontColor=#555555;fontSize=10;" target="storage" value="read / write ciphertext">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="caption" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontColor=#777777;fontStyle=2;fontSize=11;" value="Rectangles are processes, cylinders are data stores, the ellipse is an external entity. Dashed lines are trust boundaries." vertex="1">
+                    <mxGeometry height="30" width="700" x="40" y="610" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
