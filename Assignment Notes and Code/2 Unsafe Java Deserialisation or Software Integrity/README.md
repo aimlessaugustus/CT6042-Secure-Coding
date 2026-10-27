@@ -6,7 +6,7 @@ This laboratory example emulates CVE-2020-9484, in which Apache Tomcat’s Persi
 
 ## Demonstration of Exploitability
 
-The minimal sink is a single unfiltered readObject() on a session file (Listing~X). Exploitation needs no flaw in the application’s own classes. Using ysoserial, an attacker serialises a CommonsCollections6 gadget chain that embeds an operating-system command, here touch /tmp/pwned, and writes the result as a .session file; in the lab this is placed directly, while in CVE-2020-9484 a ../ session identifier redirected the store to an uploaded file. When the application reloads that session, readObject() rebuilds the object graph and the chain executes during reconstruction, before any value is returned (Figure~X). The dropped /tmp/pwned file confirms arbitrary execution. Because the command runs with the JVM’s privileges, impact is complete: confidentiality, integrity and availability are all lost. The application never references Commons Collections; its presence on the classpath suffices.
+The minimal sink is a single unfiltered readObject() on a session file. Exploitation needs no flaw in the application’s own classes. Using ysoserial, an attacker serialises a CommonsCollections6 gadget chain that embeds an operating-system command, here touch /tmp/pwned, and writes the result as a .session file; in the lab this is placed directly, while in CVE-2020-9484 a ../ session identifier redirected the store to an uploaded file. When the application reloads that session, readObject() rebuilds the object graph and the chain executes during reconstruction, before any value is returned (Figure~X). The dropped /tmp/pwned file confirms arbitrary execution. Because the command runs with the JVM’s privileges, impact is complete: confidentiality, integrity and availability are all lost. The application never references Commons Collections; its presence on the classpath suffices.
 
 ![alt text](Images/successfuldeserealisationexploit.png)
 *Figure: Successful RCE on an Ubuntu VM running the vulnerabe application.*
@@ -26,7 +26,7 @@ The minimal sink is a single unfiltered readObject() on a session file (Listing~
 
 *Assignment Section draft*
 
-Three complementary techniques identified the flaw. Software composition analysis using OSV-Scanner flagged commons-collections 3.1 as carrying the InvokerTransformer gadget chain, reporting the CVE-2015-7501 advisory. Static review alone would miss because the application never imports the library directly. \parencite{OSVScanner2024}. Static analysis with Semgrep's Java ruleset independently raised an unsafe-deserialisation finding on `VulnerableSessionStore.load()`, locating the unfiltered `readObject()` sink (Figure~X) \parencite{Semgrep2024}. The two findings were then confirmed dynamically through the ysoserial `CommonsCollections6` payload executing during deserialisation and created `/tmp/pwned`, proving the warnings were exploitable rather than theoretical (Figure~X).
+Three complementary techniques identified the flaw. Software composition analysis using OSV-Scanner flagged commons-collections 3.1 as carrying the InvokerTransformer gadget chain, reporting the CVE-2015-7501 advisory. Static review alone would miss because the application never imports the library directly. Static analysis with Semgrep's Java ruleset independently raised an unsafe-deserialisation finding on `VulnerableSessionStore.load()`, locating the unfiltered `readObject()` sink. The two findings were then confirmed dynamically through the ysoserial `CommonsCollections6` payload executing during deserialisation and created `/tmp/pwned`, proving the warnings were exploitable rather than theoretical.
 
 ![alt text](Images/osvscannersve20157501.png)
 *Figure: OSV-Scanner flagging CVE-2015-7501 within the repository*
@@ -36,7 +36,7 @@ Three complementary techniques identified the flaw. Software composition analysi
 
 ## How to Mitigate the Vulnerability
 
-The fix applies two controls, one per finding. For the sink, deserialisation is constrained at reconstruction using a JEP 290 ObjectInputFilter (Listing~X), the mechanism behind Tomcat’s own remediation \parencite{Oracle2018JEP290}. Because the gadget chain executes during reconstruction, validating the returned object would act too late. The filter instead vets each class beforehand using a strict allow-list (!*) that fails safe as new gadget chains emerge. For the dependency, the vulnerable commons-collections 3.1 (CVE-2015-7501) is removed from the build, eliminating the gadget classes the chain relied on. Addressing both the sink and the dependency reflects defence-in-depth, but comes with the trade-off of ongoing allow-list and dependency maintenance \parencite{OWASP2022Deser}.
+The fix applies two controls, one per finding. For the sink, deserialisation is constrained at reconstruction using a JEP 290 ObjectInputFilter, the mechanism behind Tomcat’s own remediation. Because the gadget chain executes during reconstruction, validating the returned object would act too late. The filter instead vets each class beforehand using a strict allow-list (!*) that fails safe as new gadget chains emerge. For the dependency, the vulnerable commons-collections 3.1 (CVE-2015-7501) is removed from the build, eliminating the gadget classes the chain relied on. Addressing both the sink and the dependency reflects defence-in-depth, but comes with the trade-off of ongoing allow-list and dependency maintenance \parencite{OWASP2022Deser}.
 
 *Listing: The allow-list filter being enabled within MitigatedSessionStore.java*
 
@@ -53,7 +53,7 @@ The fix applies two controls, one per finding. For the sink, deserialisation is 
 
 ## Retesting For Resilience
 
-The ysoserial payload was rejected by the filter, preventing execution on the VM (Figure~X), and OSV-Scanner no longer flagged commons-collections (Figure~X). Semgrep still reported the sink (Figure~X): a false positive, as it matches the readObject() pattern statically and cannot see the runtime filter. Residual risk remains, since an allow-listed class could itself be exploitable. Migrating to a data-only format would remove the sink entirely.
+The ysoserial payload was rejected by the filter, preventing execution on the VM, and OSV-Scanner no longer flagged commons-collections. Semgrep still reported the sink: a false positive, as it matches the readObject() pattern statically and cannot see the runtime filter. Residual risk remains, since an allow-listed class could itself be exploitable. Migrating to a data-only format would remove the sink entirely.
 
 ![alt text](Images/fixeddesercodesemgrep.png)
 *Figure: Semgrep scan on the mitigated code still detecting a potential serialisation vulnerability*
