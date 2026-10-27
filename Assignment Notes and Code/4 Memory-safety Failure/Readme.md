@@ -6,7 +6,7 @@ This laboratory example emulates CVE-2026-42945 ("NGINX Rift"), a heap overflow 
 
 ## Vulnerable Code and Exploit
 
-The minimal sink is the two-pass build (Listing X). A length function and a copy function share one escape predicate, but each pass sees different engine state. The capture is N URI-escapable bytes, from plus signs padding the request path. The length pass runs on a zeroed sub-engine and sizes the buffer at raw width. The copy pass runs on the main engine, which still carries `is_args` from the rewrite's question mark, so it writes percent-encoded triples (Figure X). A buffer allocated for N bytes therefore receives 3N, overflowing by 2N (Output Figure). In NGINX the overrun crosses into an adjacent request pool. A cleanup handler sprayed there is reached on pool destruction, giving remote code execution with ASLR off, a full loss of confidentiality, integrity and availability[^depthfirstRift]. With ASLR on, the worker only crashes, a denial of service[^RedHatNginxRift].
+The minimal sink is the two-pass build. A length function and a copy function share one escape predicate, but each pass sees different engine state. The capture is N URI-escapable bytes, from plus signs padding the request path. The length pass runs on a zeroed sub-engine and sizes the buffer at raw width. The copy pass runs on the main engine, which still carries `is_args` from the rewrite's question mark, so it writes percent-encoded triples. A buffer allocated for N bytes therefore receives 3N, overflowing by 2N. In NGINX the overrun crosses into an adjacent request pool. A cleanup handler sprayed there is reached on pool destruction, giving remote code execution with ASLR off, a full loss of confidentiality, integrity and availability[^depthfirstRift]. With ASLR on, the worker only crashes, a denial of service[^RedHatNginxRift].
 
 *Figure: Diagram illustrating the two-pass script engine*
 
@@ -47,7 +47,7 @@ static void copy_capture(script_engine_t *e,
 
 ## Testing to Identify
 
-Three techniques were applied. Static analysis came first: GCC's `-fanalyzer` and the Clang Static Analyzer both ran without detecting errors. This is expected rather than reassuring, because the undersizing and the overrun sit in different functions, gated by state set in a third, which local pattern-matching does not model (Figure P). Runtime instrumentation then exposed it. AddressSanitizer reported a heap-buffer-overflow write in `copy_capture`, one byte past an 8-byte allocation it traced to the length pass (Figure Q). A random fuzzer corroborated this, reaching the same crash within two inputs once one contained a plus sign (Figure R).
+Three techniques were applied. Static analysis came first: GCC's `-fanalyzer` and the Clang Static Analyzer both ran without detecting errors. This is expected rather than reassuring, because the undersizing and the overrun sit in different functions, gated by state set in a third, which local pattern-matching does not model. Runtime instrumentation then exposed it. AddressSanitizer reported a heap-buffer-overflow write in `copy_capture`, one byte past an 8-byte allocation it traced to the length pass. A random fuzzer corroborated this, reaching the same crash within two inputs once one contained a plus sign.
 
 ![alt text](Images/memoryoverflowsastfailcorrected.png)
 *Figure Q: -fanalyzer and Clang failing to detect the budder overflow error*
@@ -60,7 +60,7 @@ Three techniques were applied. Static analysis came first: GCC's `-fanalyzer` an
 
 ## Mitigating and Justification
 
-The fix mirrors the upstream patch exactly. Nginx commit 524977e adds one line to `ngx_http_script_regex_end_code`, clearing `is_args` at the end of rewrite handling (Listing S)[^nginxFix]. The stale flag can then no longer leak into a following `set` or `if` capture, so the length and copy passes observe the same state and compute the same size. Resetting is preferable to propagating the flag into the sub-engine, because the capture in a `set` directive should be stored raw, not args-escaped. The change is a single assignment, so the performance cost is nil and no legitimate rewrite behaviour regresses.
+The fix mirrors the upstream patch exactly. Nginx commit 524977e adds one line to `ngx_http_script_regex_end_code`, clearing `is_args` at the end of rewrite handling [^nginxFix]. The stale flag can then no longer leak into a following `set` or `if` capture, so the length and copy passes observe the same state and compute the same size. Resetting is preferable to propagating the flag into the sub-engine, because the capture in a `set` directive should be stored raw, not args-escaped. The change is a single assignment, so the performance cost is nil and no legitimate rewrite behaviour regresses.
 
 *Listing: The fix implemented within rift_fix.c*
 

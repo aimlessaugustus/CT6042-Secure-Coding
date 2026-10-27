@@ -26,6 +26,10 @@ The exception to this is the supply chain failure lab, where the readme contains
 
 VM snapshots were taken for the supply chain and java deserialisation case studies, but couldn't be uploaded due to file upload restrictions. 
 
+If these are required, please reach out to me at:
+
+s4413701@glos.ac.uk
+
 ## Running the Examples
 
 The three local labs were developed in VS Code and run directly. The deserialisation and Solr labs run inside their isolated virtual machines, with the Solr environment reproduced through Docker. Each lab folder contains its own vulnerable and mitigated builds, so the before-and-after behaviour can be observed in place, along with the exploit and retest scripts referenced in the report.

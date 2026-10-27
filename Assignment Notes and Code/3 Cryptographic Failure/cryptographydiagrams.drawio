@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram id="OVMggegndIsi5MFN3ovI" name="AES-ECB Encryption">
-        <mxGraphModel dx="1407" dy="1215" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+        <mxGraphModel dx="963" dy="1215" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="light-dark(#ffffff, #121212)" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -63,7 +63,7 @@
         </mxGraphModel>
     </diagram>
     <diagram id="GsB0GbFPoU5vP4QJRPow" name="AES-CBC Encryption">
-        <mxGraphModel dx="1583" dy="1367" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+        <mxGraphModel dx="800" dy="1009" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="light-dark(#ffffff, #121212)" math="0" shadow="0">
             <root>
                 <mxCell id="r8QCmW-DAEgUAzqIFJeD-0"/>
                 <mxCell id="r8QCmW-DAEgUAzqIFJeD-1" parent="r8QCmW-DAEgUAzqIFJeD-0"/>
@@ -124,7 +124,7 @@
         </mxGraphModel>
     </diagram>
     <diagram id="0EfI1BBrJsymP-JxPta2" name="AES-GCM Encryption">
-        <mxGraphModel dx="1169" dy="1009" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+        <mxGraphModel dx="1106" dy="1396" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="light-dark(#ffffff, #121212)" math="0" shadow="0">
             <root>
                 <mxCell id="coQ4tDi0hKZb1TG4YOxn-0"/>
                 <mxCell id="coQ4tDi0hKZb1TG4YOxn-1" parent="coQ4tDi0hKZb1TG4YOxn-0"/>
